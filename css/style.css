@@ -19,6 +19,8 @@ button:focus-visible { outline: 3px solid var(--acid); outline-offset: 2px; }
 #clock:empty { display: none; }
 #crate { pointer-events: auto; display: flex; align-items: center; gap: 4px; background: #000; border: 2px solid var(--fg); color: var(--fg); font-family: var(--display); font-size: 16px; padding: 3px 9px; min-height: 36px; }
 #crate .ico { width: 20px; height: 20px; }
+#crate[hidden] { display: none; }
+.shelf:empty { display: none; }
 #crate.bump { animation: bump .5s; } #crate.drop { animation: drop .5s; }
 @keyframes bump { 30% { transform: scale(1.35) rotate(6deg); background: var(--bad); } }
 @keyframes drop { 30% { transform: scale(1.25) rotate(-6deg); background: var(--good); color: #000; } }
