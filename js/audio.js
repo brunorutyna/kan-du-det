@@ -28,12 +28,12 @@
   let cur = null, curDone = null;
   function stopVoice() { if (cur) { try { cur.pause(); } catch (e) {} cur = null; } if (curDone) { const d = curDone; curDone = null; d(); } }
   // Returns a promise that resolves when the clip ends (or at once if voice is off / missing).
-  // Lines are queued, never cut: a new line waits for the one still playing (the ▶ button cuts on purpose).
+  // Story panels queue their lines so none is cut; in mini-games a new line replaces the old one at once.
   let chain = Promise.resolve();
-  function say(who, text, cut) {
+  function say(who, text, queue) {
     const id = clipId(who, text);
     if (!S().voice || !K.VOICES || !K.VOICES[id]) return Promise.resolve(false);
-    if (cut) { stopVoice(); chain = Promise.resolve(); }
+    if (!queue) { stopVoice(); chain = Promise.resolve(); }
     const p = chain.then(() => new Promise((res) => {
       const a = new Audio('audio/v/' + id + '.mp3');
       a.volume = 1; cur = a; curDone = () => res(true);
@@ -118,10 +118,10 @@
         // arp
         if (k % 2 === 0 || !tr.sparse) {
           const deg = ch[tr.arp[step % tr.arp.length] % ch.length];
-          if (!tr.sparse || k % 4 === 0) voiceOsc(hz(tr.root + 12 + deg + (Math.floor(step / tr.arp.length) % 2 ? 12 : 0)), t, s16 * 0.9, 'square', 0.05, { cut: 2600, wet: true });
+          if (!tr.sparse || k % 4 === 0) voiceOsc(hz(tr.root + 12 + deg + (Math.floor(step / tr.arp.length) % 2 ? 12 : 0)), t, s16 * 0.9, 'square', 0.05, { cut: 2600 });
         }
         // pad on bar start
-        if (tr.pad && k === 0) ch.forEach((d, i) => { voiceOsc(hz(tr.root + 12 + d), t, s16 * 15, 'sawtooth', 0.035, { att: 0.3, cut: 1200, detune: i * 7, wet: true }); voiceOsc(hz(tr.root + 12 + d), t, s16 * 15, 'sawtooth', 0.03, { att: 0.3, cut: 1200, detune: -9, wet: true }); });
+        if (tr.pad && k === 0) ch.forEach((d, i) => { voiceOsc(hz(tr.root + 12 + d), t, s16 * 15, 'sawtooth', 0.05, { att: 0.3, cut: 1200, detune: i * 7 - 7, wet: true }); });
         // lead
         if (tr.lead && bar % 4 >= 2) { const l = tr.lead[(step) % tr.lead.length]; if (l) voiceOsc(hz(tr.root + 12 + l), t, s16 * 2.2, 'square', 0.07, { cut: 3200, wet: true, att: 0.01 }); }
         // drums

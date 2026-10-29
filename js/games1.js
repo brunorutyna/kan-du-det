@@ -103,7 +103,7 @@
           const tipBox = el('div', 'tipbox'); tipBox.appendChild(K.renderLine({ w: 'gun', da: 'Den, det, de: så bliver den unik.', en: 'Den, det, de: then it becomes unique.' }));
           tipBox.appendChild(K.renderLine({ w: 'gun', da: 'En, et, nogle: så er den bare en af mange.', en: 'En, et, nogle: then it is just one of many.' }));
           body.appendChild(tipBox);
-          await K.audio.say('gun', 'Den, det, de: så bliver den unik.');
+          K.audio.say('gun', 'Den, det, de: så bliver den unik.');
         }
         if (it.adj === 'groen' && p.story) {
           const lie = K.cap(K.np('indef', ['roed'], it.noun)) + '.';
@@ -133,8 +133,8 @@
               st.follower = 'stol';
               K.feedback(body, true);
               const f = el('div', 'fb follow'); f.appendChild(K.renderLine({ w: 'stol', da: 'Mig? Den grå stol? Tak!', en: 'Me? The grey chair? Thanks!' })); body.appendChild(f);
-              await K.audio.say('stol', 'Mig? Den grå stol? Tak!');
-              await wait(900);
+              K.audio.say('stol', 'Mig? Den grå stol? Tak!');
+              await wait(500);
             } else {
               const f = el('div', 'fb half', `Rigtigt dansk. Men nu er den unik — og den bliver.`); body.appendChild(f);
             }
@@ -149,7 +149,7 @@
           tag(st, it.noun, it.adj, it.kind === 'unik' ? 'def' : 'indef', r.said);
           fingerprint(st, it.noun, it.adj, it.kind === 'unik' ? 'def' : 'indef', r.said);
         }
-        await wait(r.ok ? 900 : 2100);
+        await K.after(body, r.ok);
       }
       await K.resultStamp('containerne', score, items.length * 2);
       return score;
@@ -218,8 +218,8 @@
           }
           tag(st, noun, adj, 'indef', said ? said.replace(/^Sikke /, '') : K.np('indef', [adj], noun));
           if (said) fingerprint(st, noun, adj, 'indef', said.replace(/^Sikke /, ''));
-          await K.audio.say(d.who, full + '!');
-          await wait(pick === right ? 500 : 1600);
+          K.audio.say(d.who, full + '!');
+          await K.after(area, pick === right);
           area.remove();
         }
       }
@@ -267,11 +267,11 @@
         if (r.said) fingerprint(st, noun, adj, det, r.said);
         tag(st, noun, adj, det, r.said || right);
         draw();
-        await K.audio.say('lilla', K.cap(right) + '.');
-        await wait(r.ok ? 700 : 1900);
+        K.audio.say('lilla', K.cap(right) + '.');
+        await K.after(area, r.ok);
         area.remove();
       }
-      if (bossHp <= 0) { stage.appendChild(K.renderLine({ w: 'lilla', da: 'Nej! Min rustning!', en: 'No! My armour!' })); await K.audio.say('lilla', 'Nej! Min rustning!'); await wait(900); }
+      if (bossHp <= 0) { stage.appendChild(K.renderLine({ w: 'lilla', da: 'Nej! Min rustning!', en: 'No! My armour!' })); K.audio.say('lilla', 'Nej! Min rustning!'); await wait(900); }
       await K.resultStamp('lilla', score, n, bossHp <= 0 ? 'Rustningen faldt.' : myHp <= 0 ? 'Hun gik med sit tøj.' : '');
       return bossHp <= 0;
     },
@@ -326,7 +326,7 @@
         const area = el('div', 'sal');
         area.appendChild(K.renderLine({ w: 'ellen', da: o.da }));
         stage.appendChild(area);
-        await K.audio.say('ellen', o.da);
+        K.audio.say('ellen', o.da);
         const r = reactions(o.v, o.pol);
         const wrong = K.shuffle(wrongReactions(o.v, o.pol)).slice(0, 2);
         const res = await new Promise((resolve) => {
@@ -342,17 +342,17 @@
         });
         const kind = res === r.agree ? 'agree' : res === r.surprise ? 'surprise' : res ? 'wrong' : 'none';
         st.stirren.push({ i: OPIN.indexOf(o), said: res || '…', kind });
-        if (res) await K.audio.say('holger', res);
+        if (res) K.audio.say('holger', res);
         if (kind === 'agree' || kind === 'surprise') {
           score++; K.feedback(area, true);
           const reply = kind === 'agree' ? ellenReply(o.noun).stay : ellenReply(o.noun).take;
           area.appendChild(K.renderLine({ w: 'ellen', da: reply, en: kind === 'agree' ? 'Then it stays here.' : 'Then I\'ll take it with me.' }));
-          await K.audio.say('ellen', reply);
+          K.audio.say('ellen', reply);
         } else {
           K.sock(1, res ? 'forkert kort svar' : 'tavshed');
           K.feedback(area, false, r.agree + ' / ' + r.surprise, o.pol > 0 ? 'Her sentence has no ikke, so agree with også. Repeat her verb (' + o.v + ').' : 'Her sentence has ikke, so agree with heller ikke. Repeat her verb (' + o.v + ').');
         }
-        await wait(K.fast ? 50 : 1500);
+        await K.after(area, kind === 'agree' || kind === 'surprise');
         area.remove();
       }
       await K.resultStamp('stirren', score, list.length);
@@ -375,8 +375,9 @@
       const cv = el('canvas', 'arena-cv'); body.appendChild(cv);
       const disp = el('div', 'display'); body.appendChild(disp);
       const stats = el('div', 'astats'); body.appendChild(stats);
-      const W = cv.width = body.clientWidth * devicePixelRatio, H = cv.height = body.clientHeight * devicePixelRatio;
-      const g = cv.getContext('2d'); const u = devicePixelRatio;
+      const DPR = Math.min(1.5, devicePixelRatio || 1);
+      const W = cv.width = body.clientWidth * DPR, H = cv.height = body.clientHeight * DPR;
+      const g = cv.getContext('2d'); const u = DPR;
       // pre-render sprites
       const sprites = {};
       const spriteOf = async (n, c) => { const k = n + c; if (!sprites[k]) sprites[k] = await K.objCanvas(n, c, null, 96); return sprites[k]; };

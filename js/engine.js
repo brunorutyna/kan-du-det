@@ -128,6 +128,16 @@
     return f;
   };
 
+  // After an answer: a right one moves on almost at once; a wrong one waits for a tap so the correction can be read.
+  K.after = function (root, ok) {
+    if (ok || K.fast) return wait(ok ? 380 : 30);
+    return new Promise((res) => {
+      const b = el('button', 'next small', 'Videre ▸'); b.type = 'button';
+      b.onclick = () => { b.remove(); res(); };
+      (root.closest('.gbody') || root).appendChild(b); b.scrollIntoView({ block: 'end' });
+    });
+  };
+
   // ---------- screens ----------
   function screen(cls) {
     const s = $('#screen'); s.className = 'screen ' + (cls || ''); s.innerHTML = ''; hideTip();
@@ -154,9 +164,9 @@
       const row = renderLine(l);
       box.appendChild(row); row.scrollIntoView({ block: 'end', behavior: K.fast ? 'auto' : 'smooth' });
       let spoken = Promise.resolve();
-      if (l.da && l.w) spoken = K.audio.say(l.w, l.da);
+      if (l.da && l.w) spoken = K.audio.say(l.w, l.da, true);
       // English captions and thoughts flow on by themselves; the player taps after Danish lines and at the end
-      if (!l.da && i < lines.length - 1) { await wait(350); continue; }
+      if (!l.da && i < lines.length - 1) { await wait(120); continue; }
       await new Promise((res) => { next.onclick = () => { K.audio.sfx('tap'); res(); }; box.onclick = (e) => { if (e.target === box) res(); }; });
       if (l.da && l.w && !K.fast) await Promise.race([spoken, wait(10)]);
     }
@@ -170,7 +180,7 @@
     if (w.cls !== 'cap') row.appendChild(el('div', 'who', l.name || w.name));
     const t = el('div', 'da', daHTML(l.da)); row.appendChild(t);
     const tools = el('div', 'tools');
-    const hear = el('button', 'mini', '▶'); hear.type = 'button'; hear.title = 'Hør'; hear.onclick = (e) => { e.stopPropagation(); K.audio.say(l.w, l.da, true); };
+    const hear = el('button', 'mini', '▶'); hear.type = 'button'; hear.title = 'Hør'; hear.onclick = (e) => { e.stopPropagation(); K.audio.say(l.w, l.da); };
     tools.appendChild(hear);
     if (l.en) {
       const tr = el('button', 'mini', 'EN'); tr.type = 'button'; tr.title = 'Oversæt (koster en sok)';
@@ -188,7 +198,7 @@
     s.appendChild(el('div', 'big', title));
     if (sub) s.appendChild(el('div', 'sub', sub));
     K.audio.sfx('zoom');
-    await wait(2200);
+    await new Promise((res) => { const t = setTimeout(res, K.fast ? 30 : 1100); s.onclick = () => { clearTimeout(t); res(); }; });
   };
 
   // Choice in Danish (or English, with a cost). options: [{da|en, ...}] → index

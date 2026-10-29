@@ -49,7 +49,7 @@
         area.appendChild(el('div', 'frame', 'Holger svarer:'));
         area.appendChild(K.renderLine({ w: 'holger', da: rec.said }));
         stage.appendChild(area);
-        if (rec.said !== '…') await K.audio.say('holger', rec.said);
+        if (rec.said !== '…') K.audio.say('holger', rec.said);
         const prod = rec.said === '…' ? [] : producers(rec.said);
         let opts;
         if (!prod.length) {
@@ -69,7 +69,7 @@
           K.shuffle(texts).forEach((t) => { const b = el('button', 'opt', K.daHTML(t)); b.type = 'button'; b.onclick = () => { box.remove(); res(t); }; box.appendChild(b); });
           area.appendChild(box);
         });
-        await K.audio.say('ellen', pick);
+        K.audio.say('ellen', pick);
         if (pick === right) {
           score++; K.feedback(area, true);
           if (right !== o.da) area.appendChild(el('div', 'think', 'That is not what you said on Saturday. Is it? His answer says it is.'));
@@ -78,7 +78,7 @@
           const [v, pol] = opts[0];
           K.feedback(area, false, right, `"${rec.said}" repeats the verb ${v} and answers a ${pol > 0 ? 'positive' : 'negative'} sentence.`);
         }
-        await wait(K.fast ? 50 : 1800);
+        await K.after(area, pick === right);
         area.remove();
       }
       await K.resultStamp('stirrenIgen', score, max);
@@ -188,7 +188,7 @@
       let price = 400, crowd = 40, praised = 0, crit = 0, behind = 0, score = 0, rounds = 0;
       const show = () => { meter.querySelector('.price').textContent = price + ' kr.'; meter.querySelector('.crowd b').textContent = crowd; meter.querySelector('.curtain i').style.width = Math.min(100, behind) + '%'; };
       const area = el('div', 'sal'); stage.appendChild(area);
-      const say = async (w, t, en) => { area.innerHTML = ''; area.appendChild(K.renderLine({ w, da: t, en })); await K.audio.say(w, t); };
+      const say = async (w, t, en) => { area.innerHTML = ''; area.appendChild(K.renderLine({ w, da: t, en })); await wait(250); K.audio.say(w, t); };
       await say('auctioneer', AUC.open, 'Lot number one: the checked suit! What a suit! Who bids?');
       let result = null;
       while (!result) {
@@ -204,7 +204,7 @@
         });
         await say('ellen', pick[0]);
         const isPraise = ELLEN_PRAISE.includes(pick);
-        if (!pick[1]) { const f = FIX[pick[0]] || ['', '']; K.sock(1, 'forkert dansk'); K.feedback(area, false, f[0], f[1]); await wait(1800); continue; }
+        if (!pick[1]) { const f = FIX[pick[0]] || ['', '']; K.sock(1, 'forkert dansk'); K.feedback(area, false, f[0], f[1]); await K.after(area, false); continue; }
         if (isPraise) {
           praised++; price = Math.min(st.money || 1000, price + 300); crowd += 15; behind += 34; show();
           stage.classList.add('hitboss'); setTimeout(() => stage.classList.remove('hitboss'), 300);
@@ -245,8 +245,8 @@
           const built = await K.buildSentence(stage, tiles, target.split(' ').length);
           const sent = built.join(' ') + '.';
           tries++;
-          if (sent === target) { ok = true; await K.audio.say('ellen', target); K.feedback(stage, true); await wait(700); }
-          else { K.sock(1, 'pistolen hørte forkert'); K.feedback(stage, false, target, 'tørklæde is an et-word: det … rødt / grønt.'); await wait(1800); stage.querySelectorAll('.fb').forEach((x) => x.remove()); }
+          if (sent === target) { ok = true; K.audio.say('ellen', target); K.feedback(stage, true); await wait(380); }
+          else { K.sock(1, 'pistolen hørte forkert'); K.feedback(stage, false, target, 'tørklæde is an et-word: det … rødt / grønt.'); await K.after(stage, false); stage.querySelectorAll('.fb').forEach((x) => x.remove()); }
         }
       }
       st.recoloured = true;
@@ -254,10 +254,10 @@
       setTimeout(() => document.body.classList.remove('recolour'), 2600);
       K.audio.sfx('boom');
       stage.appendChild(K.renderLine({ w: 'gun', da: 'Grøn. Grønt. Grønne. Åh.', en: 'Green. Green. Green. Oh.' }));
-      await K.audio.say('gun', 'Grøn. Grønt. Grønne. Åh.');
+      K.audio.say('gun', 'Grøn. Grønt. Grønne. Åh.');
       if (st.scarf === 'roed') { st.scarf = 'groen'; st.scarfViaGun = true; }
       (st.tags || []).forEach((t) => { if (t.adj === 'roed' && t.noun === 'toerklaede') t.adj = 'groen'; });
-      await wait(1200);
+      await wait(900);
       await K.resultStamp('farven', 2, Math.max(2, tries));
       return true;
     },
@@ -337,7 +337,7 @@
       if (!rounds.length) {
         // a perfect Saturday: the gun knows its old owner's voice
         area.appendChild(K.renderLine({ w: 'gun', da: 'Ham. Jeg kender hans stemme.', en: 'Him. I know his voice.' }));
-        await K.audio.say('gun', 'Ham. Jeg kender hans stemme.');
+        K.audio.say('gun', 'Ham. Jeg kender hans stemme.');
         cells.find((c) => c.dataset.w === 'manden').classList.add('glow');
         await new Promise((res) => cells.forEach((c) => (c.onclick = () => { if (c.dataset.w === 'manden') { score++; res(); } else K.audio.sfx('bad'); })));
       }
@@ -360,19 +360,19 @@
         cells.forEach((x) => x.classList.remove('heard'));
         if (choice === 'manden') { score++; K.feedback(area, true); }
         else { K.sock(1, 'forkert mand'); K.feedback(area, false, 'Manden sagde: ' + an.same, 'Same kind of slip as the tag: ' + m.said + ' → ' + m.right + '.'); }
-        await wait(K.fast ? 50 : 1600);
+        await K.after(area, choice === 'manden');
       }
       area.innerHTML = '';
       cells.forEach((c) => { c.onclick = null; c.disabled = true; });
       if (st.jacket === 'gen') {
         area.appendChild(K.renderLine({ w: 'impostor', da: 'Jeg hedder Holger. Det er min jakke.', en: 'My name is Holger. It is my jacket.' }));
-        await K.audio.say('impostor', 'Jeg hedder Holger. Det er min jakke.');
+        K.audio.say('impostor', 'Jeg hedder Holger. Det er min jakke.');
         const opts = ['Det er ikke din jakke. Det er Holgers jakke.', 'Det er ikke sin jakke. Det er Holgers jakke.', 'Det er ikke din jakke. Det er Holger jakke.'];
         const sh = K.shuffle(opts);
         const i = await K.choose('', sh.map((d) => ({ da: d })), 'ellen');
         if (sh[i] === opts[0]) { st.namedBack = true; score++; K.feedback(area, true); }
         else { K.sock(1, 'navnet blev hos ham'); K.feedback(area, false, opts[0], 'Talking to him: din jakke (your). A name owns with -s: Holgers jakke. Never sin here: sin points back to the subject of the same sentence.'); }
-        await wait(K.fast ? 50 : 1600);
+        await K.after(area, sh[i] === opts[0]);
       }
       await K.resultStamp('hvem', score, Math.max(1, rounds.length || 1) + (st.jacket === 'gen' ? 1 : 0));
       return score;
@@ -413,7 +413,7 @@
           K.mistake({ said: r.said || '', right, noun: it.noun, adj: it.adj, det: 'min', day: 'ellen' });
           if (it.scarf) { st.flat.push(right); }
         }
-        await wait(r.ok ? 700 : 1900);
+        await K.after(area, r.ok);
         area.remove();
       }
       await K.resultStamp('mine', score, items.length);
@@ -449,7 +449,7 @@
         const form = await step('Med den rigtige endelse:', forms);
         const said = `${det} ${form} ${K.nounForm(noun)}`, ok = said === K.np('min', [adj], noun);
         area.innerHTML = ''; const thrown = el('div', 'thrown', K.daHTML(said)); area.appendChild(thrown);
-        await wait(500);
+        await wait(250);
         if (ok) {
           score++; K.sock(-1, 'en ting igen');
           const img = await K.cardFor(noun, [adj], 90); img.classList.add('popout'); made.appendChild(img);
@@ -457,23 +457,23 @@
         } else {
           K.sock(1, 'en sok mere');
           K.feedback(area, false, K.np('min', [adj], noun), K.why('min', adj, noun));
-          await wait(1800);
+          await K.after(area, false);
         }
         crate.querySelector('.count').textContent = st.socks;
       }
       // the last sock
       area.innerHTML = '';
       area.appendChild(K.renderLine({ w: 'sok', da: 'Jeg er den beige sok.', en: 'I am the beige sock.' }));
-      await K.audio.say('sok', 'Jeg er den beige sok.');
+      K.audio.say('sok', 'Jeg er den beige sok.');
       let ok = false;
       while (!ok) {
         const built = await K.buildSentence(area, ['den', 'det', 'de', 'beige', 'beiget', 'beigee', 'sok'], 3);
         ok = built.join(' ') === 'den beige sok';
-        if (!ok) { K.feedback(area, false, 'den beige sok', 'en sok → den; beige never changes.'); await wait(1600); area.querySelectorAll('.fb').forEach((x) => x.remove()); }
+        if (!ok) { K.feedback(area, false, 'den beige sok', 'en sok → den; beige never changes.'); await K.after(area, false); area.querySelectorAll('.fb').forEach((x) => x.remove()); }
       }
       K.sock(-1, 'den beige sok');
       area.appendChild(K.renderLine({ w: 'sok', da: 'Endelig. Nogen sagde den.', en: 'Finally. Someone said "the".' }));
-      await K.audio.say('sok', 'Endelig. Nogen sagde den.');
+      K.audio.say('sok', 'Endelig. Nogen sagde den.');
       await wait(900);
       await K.resultStamp('sokkerne', score + 1, ROUNDS + 1);
       return score;
