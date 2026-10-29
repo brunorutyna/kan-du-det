@@ -163,7 +163,14 @@
     sold: 'Solgt! Til damen i rødt!', next: 'Næste lot:', crowdLeave: 'Folk går.',
   };
   const ELLEN_PRAISE = [['Sikke et flot jakkesæt!', true], ['Hvor er det et lækkert jakkesæt!', true], ['Sikke en flot jakkesæt!', false], ['Hvor er det et lækker jakkesæt!', false]];
-  const ELLEN_CRIT = [['Det er jeg ikke så vild med.', true], ['Det er lidt for dyrt.', true], ['Det er alt for stort.', true], ['Det kan jeg ikke lide.', true], ['Den er lidt for dyr.', false], ['Det er alt for stor.', false], ['Det er jeg heller ikke så vild.', false]];
+  const ELLEN_CRIT = [['Det er jeg ikke så vild med.', true], ['Det er lidt for dyrt.', true], ['Det er alt for stort.', true], ['Det kan jeg ikke lide.', true], ['Den er lidt for dyr.', false], ['Det er alt for stor.', false], ['Det er jeg ikke så vild.', false]];
+  const FIX = {
+    'Sikke en flot jakkesæt!': ['Sikke et flot jakkesæt!', 'et jakkesæt: Sikke et …'],
+    'Hvor er det et lækker jakkesæt!': ['Hvor er det et lækkert jakkesæt!', 'et-word: lækker → lækkert'],
+    'Den er lidt for dyr.': ['Det er lidt for dyrt.', 'et jakkesæt → det, and the adjective takes -t: dyrt'],
+    'Det er alt for stor.': ['Det er alt for stort.', 'et jakkesæt → stort (-t after er)'],
+    'Det er jeg ikke så vild.': ['Det er jeg ikke så vild med.', 'vild med: the med belongs to the phrase'],
+  };
   K.G.auktion = {
     title: 'Auktionen', sub: 'Hvem byder?',
     lines() {
@@ -197,7 +204,7 @@
         });
         await say('ellen', pick[0]);
         const isPraise = ELLEN_PRAISE.includes(pick);
-        if (!pick[1]) { K.sock(1, 'forkert dansk'); K.feedback(area, false, isPraise ? 'Sikke et flot jakkesæt! (et-ord: et … flot)' : 'Det er lidt for dyrt. (et jakkesæt → det … dyrt)'); await wait(1600); continue; }
+        if (!pick[1]) { const f = FIX[pick[0]] || ['', '']; K.sock(1, 'forkert dansk'); K.feedback(area, false, f[0], f[1]); await wait(1800); continue; }
         if (isPraise) {
           praised++; price = Math.min(st.money || 1000, price + 300); crowd += 15; behind += 34; show();
           stage.classList.add('hitboss'); setTimeout(() => stage.classList.remove('hitboss'), 300);
@@ -228,7 +235,7 @@
     lines() { return [{ w: 'ellen', da: 'Det er ikke rødt.' }, { w: 'ellen', da: 'Det er grønt.' }, { w: 'gun', da: 'Grøn. Grønt. Grønne. Åh.' }]; },
     async run(p) {
       const st = K.st;
-      const { body } = K.gameFrame('Farven', 'Byg sætningen');
+      const { body } = K.gameFrame('Farven', 'Sig det om tørklædet (et tørklæde): ikke rødt, men grønt.');
       const stage = el('div', 'stage'); const bg = el('img', 'donor'); bg.src = 'img/gun.webp'; bg.alt = ''; stage.appendChild(bg); body.appendChild(stage);
       const targets = [['Det er ikke rødt.', ['Det', 'Den', 'er', 'ikke', 'rødt', 'rød', 'røde']], ['Det er grønt.', ['Det', 'Den', 'er', 'grønt', 'grøn', 'grønne']]];
       let tries = 0;
@@ -343,11 +350,11 @@
 
   // ============ 11. Mit, mit, mine ============
   K.G.mine = {
-    title: 'Mit, mit, mine', sub: 'Tag det, der er dit',
+    title: 'Min, mit, mine', sub: 'Tag det, der er dit',
     lines() { return [{ w: 'ellen', da: 'Nej tak.' }]; },
     async run(p) {
       const st = K.st;
-      const { body } = K.gameFrame('Mit, mit, mine', 'Lejligheden er lille. Gør krav på tingene.');
+      const { body } = K.gameFrame('Min, mit, mine', 'Lejligheden er lille. Gør krav på tingene.');
       const stage = el('div', 'stage'); const bg = el('img', 'donor'); bg.src = 'img/flat.webp'; bg.alt = ''; stage.appendChild(bg); body.appendChild(stage);
       const shelf = el('div', 'shelf'); stage.appendChild(shelf);
       let items = (st.bound || []).filter((b) => K.N[b.noun] && K.A[b.adj]).slice(0, 4).map((b) => ({ noun: b.noun, adj: b.adj, bound: true }));
@@ -402,8 +409,8 @@
       const ROUNDS = K.fast ? 2 : 4;
       for (let i = 0; i < ROUNDS; i++) {
         const noun = await step('En ting i dit hjem:', K.shuffle(F_NOUNS).slice(0, 6), (n) => K.daHTML(K.nounForm(n)));
-        const det = await step('Den er din:', ['min', 'mit', 'mine']);
-        const adj = await step('Hvordan ser den ud?', K.shuffle(F_ADJ).slice(0, 6), (a) => K.daHTML(K.A[a].base));
+        const det = await step('Din, dit eller dine?', ['min', 'mit', 'mine']);
+        const adj = await step('Hvilken farve?', K.shuffle(F_ADJ).slice(0, 6), (a) => K.daHTML(K.A[a].base));
         const right = K.adjForm(adj, noun, 'def');
         const forms = K.shuffle([...new Set([right].concat(K.adjVariants(adj)))].slice(0, 3).concat(right)).filter((v, j, a) => a.indexOf(v) === j);
         const form = await step('Med den rigtige endelse:', forms);

@@ -75,9 +75,9 @@
     { noun: 'hue', adj: 'blaa', kind: 'generic' },
     { noun: 'laenestol', adj: 'groen', kind: 'unik' },
     { noun: 'slips', adj: 'prikket', kind: 'generic' },
-    { noun: 'gardiner', adj: 'lyseroed', kind: 'unik' },
+    { noun: 'gardin', adj: 'lyseroed', kind: 'unik' },
   ];
-  const NOTE = { unik: 'Der er kun én.', generic: 'Der er hundrede af dem.' };
+  const NOTE = { unik: 'Der er kun én.', generic: 'Der er hundredvis af dem.' };
   K.G.containerne = {
     title: 'Containerne', sub: 'Unika eller containeren?',
     lines() {
@@ -111,7 +111,6 @@
         const tb = body.querySelector('.tipbox'); if (tb) tb.remove();
         if (r.timeout) {
           K.sock(1, 'intet navn'); K.feedback(body, false, right, K.why(it.kind === 'unik' ? 'def' : 'indef', it.adj, it.noun));
-          tag(st, it.noun, it.adj, it.kind === 'unik' ? 'def' : 'indef', K.np('indef', [it.adj], it.noun));
         } else if (r.ok) {
           score += 2; K.feedback(body, true);
           c.classList.add(it.kind === 'unik' ? 'to-unika' : 'to-skip');
@@ -229,7 +228,7 @@
     ['indef', 'laekker', 'jakkesaet'], ['def', 'lille', 'stole'], ['indef', 'graa', 'taeppe'], ['def', 'laekker', 'puder'],
     ['def', 'orange', 'gardin'], ['indef', 'lille', 'taske'], ['def', 'graa', 'skab'], ['indef', 'lilla', 'sokker'],
   ];
-  const TAUNTS = ['Lilla ændrer sig aldrig!', 'Kan du ikke lide den?!', 'Er du bange?!', 'Sikke en farve, hva\'?!', 'Hvad hedder den så?!'];
+  const TAUNTS = ['Lilla ændrer sig aldrig!', 'Kan du ikke lide min stil?!', 'Er du bange?!', 'Sikke en farve, hva\'?!', 'Hvad hedder den så?!'];
   K.G.lilla = {
     title: 'Kvinden i lilla', sub: 'Uregelmæssige adjektiver',
     lines() { const L = TAUNTS.map((t) => ({ w: 'lilla', da: t })); LILLA.forEach(([d, a, n]) => L.push({ w: 'lilla', da: K.cap(K.np(d, [a], n)) + '.' })); L.push({ w: 'lilla', da: 'Nej! Min rustning!' }); return L; },
@@ -343,7 +342,7 @@
           await K.audio.say('ellen', reply);
         } else {
           K.sock(1, res ? 'forkert kort svar' : 'tavshed');
-          K.feedback(area, false, r.agree + ' / ' + r.surprise, o.pol > 0 ? 'Agree with også after a positive sentence; repeat her verb (' + o.v + ').' : 'Agree with heller ikke after a negative sentence; repeat her verb (' + o.v + ').');
+          K.feedback(area, false, r.agree + ' / ' + r.surprise, o.pol > 0 ? 'Her sentence has no ikke, so agree with også. Repeat her verb (' + o.v + ').' : 'Her sentence has ikke, so agree with heller ikke. Repeat her verb (' + o.v + ').');
         }
         await wait(K.fast ? 50 : 1500);
         area.remove();

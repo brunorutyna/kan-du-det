@@ -38,7 +38,7 @@
       { cap: 'Last off the trailer: a crate. No donor. No note.' },
       { w: 'gun', da: 'Fire hundrede beige sokker.', en: 'Four hundred beige socks.' },
       { th: 'Holger aims the gun at the crate. "De beige sokker." The tag prints, sticks, and slides off. Again. It slides off again.' },
-      { w: 'gun', da: 'Ingen kan sige den om dem.', en: 'Nobody can say "the" about them.' },
+      { w: 'gun', da: 'Ingen kan sige de om dem.', en: 'Nobody can say "the" (de) about them.' },
       { cap: 'Top right of your screen: the crate. That number is your score. Lower is better.' },
     ] },
     { t: 'panel', if: (st) => st.follower, img: 'chairs', lines: [
@@ -75,7 +75,7 @@
       { w: 'gun', da: 'Ja. Det er mig.', en: 'Yes. It is me.' },
       { w: 'gun', da: 'Jeg skriver alt, du siger. Alt.', en: 'I write everything you say. Everything.' },
     ] },
-    { t: 'card', title: '11:50', sub: 'Ti minutter i lukketid', clock: '11:50', music: 'stirren' },
+    { t: 'card', title: '11:50', sub: 'Ti minutter før lukketid', clock: '11:50', music: 'stirren' },
     { t: 'panel', img: 'ellen_sat', fx: 'push', lines: [
       { cap: 'Ten to twelve. A woman puts a bag of a man\'s clothes on the counter as if it were evidence.' },
       { w: 'ellen', da: 'Min ekskærestes ting.', en: 'My ex\'s things.' },

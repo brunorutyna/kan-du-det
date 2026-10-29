@@ -30,10 +30,10 @@
   "text": "Fire hundrede beige sokker."
  },
  {
-  "id": "nj0mn",
+  "id": "191g76j",
   "who": "gun",
   "voice": "Orus",
-  "text": "Ingen kan sige den om dem."
+  "text": "Ingen kan sige de om dem."
  },
  {
   "id": "1vdng0w",
@@ -258,10 +258,10 @@
   "text": "Der er kun én."
  },
  {
-  "id": "1emjfb9",
+  "id": "32970w",
   "who": "gun",
   "voice": "Orus",
-  "text": "Der er hundrede af dem."
+  "text": "Der er hundredvis af dem."
  },
  {
   "id": "11n6xh9",
@@ -378,10 +378,10 @@
   "text": "Lilla ændrer sig aldrig!"
  },
  {
-  "id": "1xyndqd",
+  "id": "pljog0",
   "who": "lilla",
   "voice": "Leda",
-  "text": "Kan du ikke lide den?!"
+  "text": "Kan du ikke lide min stil?!"
  },
  {
   "id": "s4w2r2",
@@ -954,10 +954,10 @@
   "text": "Det er alt for stor."
  },
  {
-  "id": "1ha45ys",
+  "id": "ztr0x2",
   "who": "ellen",
   "voice": "Aoede",
-  "text": "Det er jeg heller ikke så vild."
+  "text": "Det er jeg ikke så vild."
  },
  {
   "id": "3sri34",
@@ -1114,18 +1114,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "Nogle gråt stole."
- },
- {
-  "id": "1nogutr",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Nogle gråe stole."
- },
- {
-  "id": "1k0bcfj",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Nogle gråe stole."
  },
  {
   "id": "14dot26",
@@ -1392,18 +1380,6 @@
   "text": "En blåt hue."
  },
  {
-  "id": "15e2ttt",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe hue."
- },
- {
-  "id": "8j17s1",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe hue."
- },
- {
   "id": "xx4bpe",
   "who": "manden",
   "voice": "Puck",
@@ -1542,46 +1518,58 @@
   "text": "Et prikket slips."
  },
  {
-  "id": "70mkzx",
+  "id": "1pwcxze",
   "who": "manden",
   "voice": "Puck",
-  "text": "De lyserøde gardiner."
+  "text": "Det lyserøde gardin."
  },
  {
-  "id": "mvir8t",
+  "id": "1ryt76y",
   "who": "seller",
   "voice": "Schedar",
-  "text": "De lyserøde gardiner."
+  "text": "Det lyserøde gardin."
  },
  {
-  "id": "1wsropy",
+  "id": "9ib8h5",
   "who": "manden",
   "voice": "Puck",
-  "text": "De lyserød gardiner."
+  "text": "Det lyserød gardin."
  },
  {
-  "id": "r33sli",
+  "id": "bztpzd",
   "who": "seller",
   "voice": "Schedar",
-  "text": "De lyserød gardiner."
+  "text": "Det lyserød gardin."
  },
  {
-  "id": "1jgnq92",
+  "id": "2nf1o5",
   "who": "manden",
   "voice": "Puck",
-  "text": "De lyserødt gardiner."
+  "text": "Det lyserødt gardin."
  },
  {
-  "id": "8616ti",
+  "id": "f4wmdx",
   "who": "seller",
   "voice": "Schedar",
-  "text": "De lyserødt gardiner."
+  "text": "Det lyserødt gardin."
  },
  {
-  "id": "cj9uzb",
+  "id": "6jaa9o",
+  "who": "manden",
+  "voice": "Puck",
+  "text": "Den lyserøde gardin."
+ },
+ {
+  "id": "1tc1mzg",
+  "who": "seller",
+  "voice": "Schedar",
+  "text": "Den lyserøde gardin."
+ },
+ {
+  "id": "1efxwto",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "De lyserøde gardiner."
+  "text": "Det lyserøde gardin."
  },
  {
   "id": "1xeecmx",
@@ -2562,18 +2550,6 @@
   "text": "Et blå slips."
  },
  {
-  "id": "143xcu8",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et blåe slips."
- },
- {
-  "id": "b3ijxc",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et blåe slips."
- },
- {
   "id": "7704ib",
   "who": "manden",
   "voice": "Puck",
@@ -2724,16 +2700,16 @@
   "text": "Den lillet seng."
  },
  {
-  "id": "mdl6gw",
+  "id": "zgo359",
   "who": "manden",
   "voice": "Puck",
-  "text": "Den lilla seng."
+  "text": "Den lillee seng."
  },
  {
-  "id": "f9frj4",
+  "id": "1pd4snh",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Den lilla seng."
+  "text": "Den lillee seng."
  },
  {
   "id": "1ejpqpy",
@@ -2776,18 +2752,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "De blåt bukser."
- },
- {
-  "id": "ngwa65",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "De blåe bukser."
- },
- {
-  "id": "71e7j1",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "De blåe bukser."
  },
  {
   "id": "22dnvc",
@@ -2940,6 +2904,18 @@
   "text": "Et lækkere jakkesæt."
  },
  {
+  "id": "2kzjv9",
+  "who": "manden",
+  "voice": "Puck",
+  "text": "Et lækkre jakkesæt."
+ },
+ {
+  "id": "753px1",
+  "who": "seller",
+  "voice": "Schedar",
+  "text": "Et lækkre jakkesæt."
+ },
+ {
   "id": "1xz8cld",
   "who": "manden",
   "voice": "Puck",
@@ -2994,16 +2970,16 @@
   "text": "De lillet stole."
  },
  {
-  "id": "1oeizce",
+  "id": "6o0rwx",
   "who": "manden",
   "voice": "Puck",
-  "text": "De lilla stole."
+  "text": "De lillee stole."
  },
  {
-  "id": "wr179q",
+  "id": "faj8tt",
   "who": "seller",
   "voice": "Schedar",
-  "text": "De lilla stole."
+  "text": "De lillee stole."
  },
  {
   "id": "1mbln4r",
@@ -3034,18 +3010,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "Et grå tæppe."
- },
- {
-  "id": "1292clf",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et gråe tæppe."
- },
- {
-  "id": "9hlzab",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et gråe tæppe."
  },
  {
   "id": "dokpag",
@@ -3112,6 +3076,18 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "De lækkere puder."
+ },
+ {
+  "id": "53jcme",
+  "who": "manden",
+  "voice": "Puck",
+  "text": "De lækkre puder."
+ },
+ {
+  "id": "4f6f9i",
+  "who": "seller",
+  "voice": "Schedar",
+  "text": "De lækkre puder."
  },
  {
   "id": "6szp3v",
@@ -3198,16 +3174,16 @@
   "text": "En lillet taske."
  },
  {
-  "id": "u5nrmj",
+  "id": "74z394",
   "who": "manden",
   "voice": "Puck",
-  "text": "En lilla taske."
+  "text": "En lillee taske."
  },
  {
-  "id": "16gy857",
+  "id": "161vkgo",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En lilla taske."
+  "text": "En lillee taske."
  },
  {
   "id": "8va40h",
@@ -3250,18 +3226,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "Det gråt skab."
- },
- {
-  "id": "qfuqj7",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Det gråe skab."
- },
- {
-  "id": "96tsz7",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Det gråe skab."
  },
  {
   "id": "1ait4u8",
@@ -3520,18 +3484,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "En blåt sofa."
- },
- {
-  "id": "prbgb0",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe sofa."
- },
- {
-  "id": "7zt430",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe sofa."
  },
  {
   "id": "1tlgg5h",
@@ -3846,18 +3798,6 @@
   "text": "En blåt lampe."
  },
  {
-  "id": "1wiew2o",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe lampe."
- },
- {
-  "id": "12xwghs",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe lampe."
- },
- {
   "id": "go9rcj",
   "who": "manden",
   "voice": "Puck",
@@ -4170,18 +4110,6 @@
   "text": "En blåt kommode."
  },
  {
-  "id": "gkaak5",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe kommode."
- },
- {
-  "id": "mhkb2t",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe kommode."
- },
- {
   "id": "1kaeuxu",
   "who": "manden",
   "voice": "Puck",
@@ -4492,18 +4420,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "En blåt stol."
- },
- {
-  "id": "1r59owp",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe stol."
- },
- {
-  "id": "hkmy61",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe stol."
  },
  {
   "id": "bfizg4",
@@ -5268,18 +5184,6 @@
   "text": "Nogle blåt sko."
  },
  {
-  "id": "f3q6ri",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Nogle blåe sko."
- },
- {
-  "id": "1xrhkny",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Nogle blåe sko."
- },
- {
   "id": "z0l1jd",
   "who": "impostor",
   "voice": "Fenrir",
@@ -5518,18 +5422,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "Nogle blåt støvler."
- },
- {
-  "id": "1cmjdpj",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Nogle blåe støvler."
- },
- {
-  "id": "afreiv",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Nogle blåe støvler."
  },
  {
   "id": "1e00suw",
@@ -5776,18 +5668,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "En blåt taske."
- },
- {
-  "id": "1gbqipn",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe taske."
- },
- {
-  "id": "ah9d5n",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe taske."
  },
  {
   "id": "y907gc",
@@ -6102,18 +5982,6 @@
   "text": "Et blå skab."
  },
  {
-  "id": "1h4d8ys",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et blåe skab."
- },
- {
-  "id": "ntv3no",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et blåe skab."
- },
- {
   "id": "1jv5tep",
   "who": "manden",
   "voice": "Puck",
@@ -6426,18 +6294,6 @@
   "text": "Et blå bord."
  },
  {
-  "id": "10r1alc",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et blåe bord."
- },
- {
-  "id": "up3chs",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et blåe bord."
- },
- {
   "id": "11d2xhl",
   "who": "manden",
   "voice": "Puck",
@@ -6706,18 +6562,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "En blåt jakke."
- },
- {
-  "id": "15ku6ed",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe jakke."
- },
- {
-  "id": "c0bqth",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe jakke."
  },
  {
   "id": "r9hvoa",
@@ -7032,18 +6876,6 @@
   "text": "En blåt pude."
  },
  {
-  "id": "1wig0uh",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe pude."
- },
- {
-  "id": "mxta3t",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe pude."
- },
- {
   "id": "11axgms",
   "who": "manden",
   "voice": "Puck",
@@ -7302,18 +7134,6 @@
   "text": "En blåt kjole."
  },
  {
-  "id": "16v2ogo",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En blåe kjole."
- },
- {
-  "id": "tih27s",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En blåe kjole."
- },
- {
   "id": "16fdnf3",
   "who": "manden",
   "voice": "Puck",
@@ -7450,18 +7270,6 @@
   "who": "seller",
   "voice": "Schedar",
   "text": "De gråt stole."
- },
- {
-  "id": "q0wu87",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "De gråe stole."
- },
- {
-  "id": "1ti5up3",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "De gråe stole."
  },
  {
   "id": "zr3q5a",
@@ -7620,18 +7428,6 @@
   "text": "Den blåt hue."
  },
  {
-  "id": "od9or5",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Den blåe hue."
- },
- {
-  "id": "sct0a9",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Den blåe hue."
- },
- {
   "id": "131edoy",
   "who": "manden",
   "voice": "Puck",
@@ -7770,46 +7566,58 @@
   "text": "Det prikkede slips."
  },
  {
-  "id": "c9umd1",
+  "id": "6knax1",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle lyserøde gardiner."
+  "text": "Et lyserødt gardin."
  },
  {
-  "id": "r9sqmt",
+  "id": "1pwijl1",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle lyserøde gardiner."
+  "text": "Et lyserødt gardin."
  },
  {
-  "id": "1v58p1a",
+  "id": "7aj8hl",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle lyserød gardiner."
+  "text": "Et lyserød gardin."
  },
  {
-  "id": "1vb6ji",
+  "id": "1c49fix",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle lyserød gardiner."
+  "text": "Et lyserød gardin."
  },
  {
-  "id": "1bhel72",
+  "id": "oaha4a",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle lyserødt gardiner."
+  "text": "Et lyserøde gardin."
  },
  {
-  "id": "1re7g8e",
+  "id": "1kivbu",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle lyserødt gardiner."
+  "text": "Et lyserøde gardin."
  },
  {
-  "id": "5v0idz",
+  "id": "17nugbz",
+  "who": "manden",
+  "voice": "Puck",
+  "text": "En lyserødt gardin."
+ },
+ {
+  "id": "1j8tmq7",
+  "who": "seller",
+  "voice": "Schedar",
+  "text": "En lyserødt gardin."
+ },
+ {
+  "id": "iaubsb",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "Nogle lyserøde gardiner."
+  "text": "Et lyserødt gardin."
  },
  {
   "id": "f20ozv",

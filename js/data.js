@@ -125,10 +125,10 @@
     const a = A[adj], set = new Set([a.base, a.t, a.pl, a.def]);
     // learner forms: add -t / -e to forms that do not take them
     if (!a.base.endsWith('t')) set.add(a.base + 't');
-    if (!/e$/.test(a.base)) set.add(a.base + 'e');
+    if (!/[eå]$/.test(a.base)) set.add(a.base + 'e');
     if (adj === 'gammel') { set.add('gammele'); }
-    if (adj === 'laekker') { set.add('lækkere'); }
-    if (adj === 'lille') { set.add('lillet'); set.add('lilla'); }
+    if (adj === 'laekker') { set.add('lækkre'); }
+    if (adj === 'lille') { set.add('lillet'); set.add('lillee'); }
     return [...set];
   }
   // Phrase with the adjective form replaced (to make a wrong option).
@@ -166,6 +166,7 @@
       if (adj === 'lille') return 'lille has its own plural: små.';
       if (adj === 'blaa' || adj === 'graa') return `${a.base} takes no -e: de/nogle ${a.base}.`;
       if (A[adj].pat) return `-et becomes -ede in the plural: ${f}.`;
+      if (adj === 'gammel' || adj === 'laekker') return `Plural: -e, and the e before the last letter drops: ${f}.`;
       return `Plural: the adjective takes -e (${f}).`;
     }
     if (frame === 'def') {
@@ -177,7 +178,7 @@
       return `After den/det/de, min/mit or a genitive, the adjective takes -e: ${f}.`;
     }
     if (n.g === 'n') {
-      if (f === a.base) return `${a.base} ends in -t already, so ${f} stays.`;
+      if (f === a.base) return a.base.endsWith('t') ? `${a.base} ends in -t already, so ${f} stays.` : `${a.base} takes no -t: et ${f} …`;
       return `et-word: the adjective takes -t (${f}).`;
     }
     return `en-word: no ending (${f}).`;
@@ -192,14 +193,14 @@
     jeg: 'I', du: 'you', han: 'he', hun: 'she', vi: 'we', mig: 'me', dig: 'you', ham: 'him', hende: 'her', os: 'us', dem: 'them',
     er: 'is / am / are', var: 'was', kan: 'can', kunne: 'could', vil: 'will / want to', skal: 'shall / must', har: 'have / has', have: 'have',
     ikke: 'not', også: 'also, too', heller: 'either (heller ikke = not either)', godt: 'well / (kan godt lide = like)', lide: '(kan lide) like',
-    så: 'so / then', vild: 'wild (vild med = crazy about)', med: 'with', af: 'of', til: 'to', for: 'too / for', lidt: 'a bit', alt: 'far (alt for = far too)',
+    så: 'so / then', vild: 'wild (vild med = crazy about)', med: 'with', af: 'of', til: 'to', for: 'too / for', lidt: 'a bit', alt: 'everything / (alt for = far too)',
     bare: 'just', jo: 'yes (after a negative question) / you know', ja: 'yes', nej: 'no', nå: 'oh', hvad: 'what', hvor: 'where / how', hvem: 'who',
     hvorfor: 'why', sikke: 'what a …!', synes: 'think (opinion)', tror: 'believe', gør: 'do / does', rigtig: 'really / right', virkelig: 'really',
     meget: 'very / much', mange: 'many', tak: 'thanks', og: 'and', men: 'but', eller: 'or', at: 'to / that', om: 'about', på: 'on / at', i: 'in',
     fra: 'from', ved: 'by / at', siden: 'side (ved siden af = next to)', overfor: 'opposite', hjørnet: 'the corner', lige: 'just / right',
     nu: 'now', her: 'here', der_: '', klokken: 'the time / at (o\'clock)', otte: 'eight', tolv: 'twelve', lørdag: 'Saturday', søndag: 'Sunday',
     kr: 'kroner', kroner: 'kroner', hundrede: 'hundred', fire: 'four', fem: 'five', tusind: 'thousand', to: 'two', tre: 'three', seks: 'six', ti: 'ten', halvtreds: 'fifty',
-    ét: 'one', én: 'one', ingen: 'nobody / no', alle: 'all', alting: 'everything', noget: 'something', nogen: 'anyone', hver: 'every',
+    ét: 'one', én: 'one', ingen: 'nobody / no', alle: 'all', alting: 'everything', noget: 'something', nogen: 'someone / anyone', hver: 'every',
     hva: 'eh? (tag)', hold: 'hold (hold da op = wow)', da: '(hold da op = wow) / then', op: 'up',
     // verbs
     hedder: 'is called', kostede: 'cost', koster: 'costs', købe: 'buy', købt: 'bought', købte: 'bought', solgt: 'sold', sælge: 'sell',
@@ -224,7 +225,7 @@
     findes: 'exists', blev: 'became', bliver: 'becomes / stays', kun: 'only', bange: 'afraid', rustning: 'armour', tager: 'take(s)', rette: 'correct, fix', nummer: 'number',
     damen: 'the lady', stiger: 'rises', falder: 'falls', tilbage: 'back', næste: 'next', knapper: 'buttons', perfekt: 'perfectly', sidste: 'last', chance: 'chance',
     folk: 'people', 'åh': 'oh', stemme: 'voice', står: 'stands (hvad står der = what does it say)', huske: 'remember', endelig: 'finally', hvordan: 'how',
-    rigtige: 'right, correct', endelse: 'ending', svarer: 'answers', ting: 'thing(s)', jakkesættet: 'the suit', gule: 'yellow (def./pl.)', går: 'goes', kunne: 'could',
+    rigtige: 'right, correct', endelse: 'ending', svarer: 'answers', ting: 'thing(s)', jakkesættet: 'the suit', tæppet: 'the curtain (stage) / the rug', hundredvis: 'hundreds', bag: 'behind', stil: 'style', hvilken: 'which', farve: 'colour', gule: 'yellow (def./pl.)', går: 'goes', kunne: 'could',
   });
   // learner forms of adjectives: same meaning, so tapping never gives the answer away
   Object.keys(A).forEach((k) => adjVariants(k).forEach((f) => { DICT[f] = DICT[f] || A[k].en; }));
