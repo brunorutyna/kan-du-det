@@ -272,7 +272,7 @@
       const redraw = () => { line.innerHTML = picked.length ? K.daHTML(picked.join(' ')) : '<span class="ph">…</span>'; };
       K.shuffle(tiles).forEach((t) => {
         const b = el('button', 'tile', K.daHTML(t)); b.type = 'button';
-        b.onclick = () => { if (b.disabled) return; picked.push(t); b.disabled = true; redraw(); K.audio.sfx('tap'); if (picked.length === n) { setTimeout(() => { wrap.remove(); res(picked.slice()); }, 250); } };
+        b.onclick = () => { if (b.disabled || picked.length >= n) return; picked.push(t); b.disabled = true; redraw(); K.audio.sfx('tap'); if (picked.length === n) { pool.querySelectorAll('.tile').forEach((x) => (x.disabled = true)); setTimeout(() => { wrap.remove(); res(picked.slice()); }, 250); } };
         pool.appendChild(b);
       });
       const undo = el('button', 'mini undo', '↺'); undo.type = 'button';
