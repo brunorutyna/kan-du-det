@@ -234,6 +234,12 @@
   "text": "Den beige sok. Min beige sok."
  },
  {
+  "id": "1ffdu1l",
+  "who": "gun",
+  "voice": "Orus",
+  "text": "En rød lænestol."
+ },
+ {
   "id": "sz7vuk",
   "who": "gun",
   "voice": "Orus",
@@ -328,6 +334,12 @@
   "who": "donor2",
   "voice": "Kore",
   "text": "Sikke et grønt bælte!"
+ },
+ {
+  "id": "k4q273",
+  "who": "gun",
+  "voice": "Orus",
+  "text": "Et rødt bælte."
  },
  {
   "id": "v8r0sc",
@@ -798,10 +810,10 @@
   "text": "Jeg synes, den røde kasket er flot."
  },
  {
-  "id": "1x837cv",
+  "id": "ijuvix",
   "who": "gun",
   "voice": "Orus",
-  "text": "Den kan du ikke rette. Den er rød."
+  "text": "Det kan du ikke rette. Det er rødt."
  },
  {
   "id": "v57ppp",
@@ -3342,70 +3354,58 @@
   "text": "En rød sofa."
  },
  {
-  "id": "k2wnhr",
+  "id": "1sil483",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn sofa."
+  "text": "En brun sofa."
  },
  {
-  "id": "z8xzj",
+  "id": "1w02doj",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn sofa."
+  "text": "En brun sofa."
  },
  {
-  "id": "vdeftf",
+  "id": "11f12rr",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt sofa."
+  "text": "En brunt sofa."
  },
  {
-  "id": "10aqptf",
+  "id": "z5kgyv",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt sofa."
+  "text": "En brunt sofa."
  },
  {
-  "id": "bnxggy",
+  "id": "1n3nl88",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne sofa."
+  "text": "En brune sofa."
  },
  {
-  "id": "19q14qq",
+  "id": "1ku6zfc",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne sofa."
+  "text": "En brune sofa."
  },
  {
-  "id": "sj3cys",
+  "id": "1sppzkl",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne sofa."
+  "text": "Et brun sofa."
  },
  {
-  "id": "1wmqv0k",
+  "id": "c8v1px",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne sofa."
+  "text": "Et brun sofa."
  },
  {
-  "id": "ml8dnd",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn sofa."
- },
- {
-  "id": "1ibhovt",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn sofa."
- },
- {
-  "id": "1q3rt5p",
+  "id": "1ko8sgp",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn sofa."
+  "text": "En brun sofa."
  },
  {
   "id": "3dm276",
@@ -3654,70 +3654,58 @@
   "text": "En rød lampe."
  },
  {
-  "id": "1u104ed",
+  "id": "1hom22h",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn lampe."
+  "text": "En brun lampe."
  },
  {
-  "id": "16495yd",
+  "id": "1sdjeah",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn lampe."
+  "text": "En brun lampe."
  },
  {
-  "id": "1ciqeh5",
+  "id": "13by6d9",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt lampe."
+  "text": "En brunt lampe."
  },
  {
-  "id": "1nlc4fd",
+  "id": "1yfpp0d",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt lampe."
+  "text": "En brunt lampe."
  },
  {
-  "id": "16xu8ke",
+  "id": "100pen0",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne lampe."
+  "text": "En brune lampe."
  },
  {
-  "id": "2fev0e",
+  "id": "8dbla4",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne lampe."
+  "text": "En brune lampe."
  },
  {
-  "id": "13r5rp4",
+  "id": "1u0vxcz",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne lampe."
+  "text": "Et brun lampe."
  },
  {
-  "id": "1q5e460",
+  "id": "8lbpkz",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne lampe."
+  "text": "Et brun lampe."
  },
  {
-  "id": "1uk1isn",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn lampe."
- },
- {
-  "id": "b9v7gn",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn lampe."
- },
- {
-  "id": "10d1z7v",
+  "id": "m9spyf",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn lampe."
+  "text": "En brun lampe."
  },
  {
   "id": "15wk1y6",
@@ -3966,70 +3954,58 @@
   "text": "En rød kommode."
  },
  {
-  "id": "35fvzk",
+  "id": "1of1grw",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn kommode."
+  "text": "En brun kommode."
  },
  {
-  "id": "mj0vdc",
+  "id": "tsy8r0",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn kommode."
+  "text": "En brun kommode."
  },
  {
-  "id": "z5dxwc",
+  "id": "b5f3rs",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt kommode."
+  "text": "En brunt kommode."
  },
  {
-  "id": "14xmt8c",
+  "id": "7ijptk",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt kommode."
+  "text": "En brunt kommode."
  },
  {
-  "id": "10jc09z",
+  "id": "xealxl",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne kommode."
+  "text": "En brune kommode."
  },
  {
-  "id": "1u3x6dj",
+  "id": "11e87mx",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne kommode."
+  "text": "En brune kommode."
  },
  {
-  "id": "18ab5nh",
+  "id": "1jbbx4i",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne kommode."
+  "text": "Et brun kommode."
  },
  {
-  "id": "qo43y5",
+  "id": "xb5doy",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne kommode."
+  "text": "Et brun kommode."
  },
  {
-  "id": "krr8su",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn kommode."
- },
- {
-  "id": "pmscmm",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn kommode."
- },
- {
-  "id": "a31fey",
+  "id": "16opnbi",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn kommode."
+  "text": "En brun kommode."
  },
  {
   "id": "1566zc7",
@@ -4278,70 +4254,58 @@
   "text": "En rød stol."
  },
  {
-  "id": "8onzw2",
+  "id": "9ellum",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn stol."
+  "text": "En brun stol."
  },
  {
-  "id": "p3lf6a",
+  "id": "cw2vb2",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn stol."
+  "text": "En brun stol."
  },
  {
-  "id": "mka5da",
+  "id": "167jvne",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt stol."
+  "text": "En brunt stol."
  },
  {
-  "id": "yic0um",
+  "id": "4fkcnu",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt stol."
+  "text": "En brunt stol."
  },
  {
-  "id": "1tle54b",
+  "id": "1atb3p9",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne stol."
+  "text": "En brune stol."
  },
  {
-  "id": "smdrez",
+  "id": "127w17h",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne stol."
+  "text": "En brune stol."
  },
  {
-  "id": "cu9ce9",
+  "id": "1rcrvvo",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne stol."
+  "text": "Et brun stol."
  },
  {
-  "id": "1nymfxd",
+  "id": "13dshc4",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne stol."
+  "text": "Et brun stol."
  },
  {
-  "id": "1gpuc1c",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn stol."
- },
- {
-  "id": "1cxkq34",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn stol."
- },
- {
-  "id": "1xxz01o",
+  "id": "frqovk",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn stol."
+  "text": "En brun stol."
  },
  {
   "id": "1lb2quj",
@@ -4536,70 +4500,58 @@
   "text": "En sort stol."
  },
  {
-  "id": "5xmwqx",
+  "id": "amfg39",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grønt slips."
+  "text": "Et brunt slips."
  },
  {
-  "id": "rgaeeh",
+  "id": "dayy1h",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grønt slips."
+  "text": "Et brunt slips."
  },
  {
-  "id": "mv7lhl",
+  "id": "1s1boad",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grøn slips."
+  "text": "Et brun slips."
  },
  {
-  "id": "33k7c9",
+  "id": "16t3q39",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grøn slips."
+  "text": "Et brun slips."
  },
  {
-  "id": "1t69o8q",
+  "id": "trbowg",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grønne slips."
+  "text": "Et brune slips."
  },
  {
-  "id": "1m0l40q",
+  "id": "1v9mz8w",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grønne slips."
+  "text": "Et brune slips."
  },
  {
-  "id": "17vpo1w",
+  "id": "m697a7",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grøne slips."
+  "text": "En brunt slips."
  },
  {
-  "id": "1fxr0dg",
+  "id": "u1gipr",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grøne slips."
+  "text": "En brunt slips."
  },
  {
-  "id": "1y27ozv",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En grønt slips."
- },
- {
-  "id": "lowy5n",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En grønt slips."
- },
- {
-  "id": "1muir3",
+  "id": "mqyn3n",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "Et grønt slips."
+  "text": "Et brunt slips."
  },
  {
   "id": "m1jcpo",
@@ -4806,70 +4758,58 @@
   "text": "En rød hue."
  },
  {
-  "id": "18gxhuc",
+  "id": "ol6m7k",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn hue."
+  "text": "En brun hue."
  },
  {
-  "id": "123mcvo",
+  "id": "a60h74",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn hue."
+  "text": "En brun hue."
  },
  {
-  "id": "rjx5q8",
+  "id": "ufez0c",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt hue."
+  "text": "En brunt hue."
  },
  {
-  "id": "1vv27og",
+  "id": "zaj3h8",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt hue."
+  "text": "En brunt hue."
  },
  {
-  "id": "1jprbsn",
+  "id": "h4yvsl",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne hue."
+  "text": "En brune hue."
  },
  {
-  "id": "1jqgas7",
+  "id": "ezdes5",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne hue."
+  "text": "En brune hue."
  },
  {
-  "id": "2z8uh5",
+  "id": "hchj8y",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne hue."
+  "text": "Et brun hue."
  },
  {
-  "id": "1vvf1pl",
+  "id": "o56lea",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne hue."
+  "text": "Et brun hue."
  },
  {
-  "id": "75hrv2",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn hue."
- },
- {
-  "id": "d5oo32",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn hue."
- },
- {
-  "id": "1riw0ui",
+  "id": "y7cpce",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn hue."
+  "text": "En brun hue."
  },
  {
   "id": "164fszb",
@@ -5064,58 +5004,46 @@
   "text": "Nogle røde sko."
  },
  {
-  "id": "13go5vk",
+  "id": "1b5um0i",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle grønne sko."
+  "text": "Nogle brune sko."
  },
  {
-  "id": "1l49e5c",
+  "id": "1u4jkwi",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle grønne sko."
+  "text": "Nogle brune sko."
  },
  {
-  "id": "1v7djb3",
+  "id": "1phol83",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle grøn sko."
+  "text": "Nogle brun sko."
  },
  {
-  "id": "fbfqfz",
+  "id": "1xwwlqr",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle grøn sko."
+  "text": "Nogle brun sko."
  },
  {
-  "id": "145natf",
+  "id": "4wf693",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle grønt sko."
+  "text": "Nogle brunt sko."
  },
  {
-  "id": "vxuntv",
+  "id": "cxmd8n",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle grønt sko."
+  "text": "Nogle brunt sko."
  },
  {
-  "id": "gccfby",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Nogle grøne sko."
- },
- {
-  "id": "13qaj3y",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Nogle grøne sko."
- },
- {
-  "id": "15f7tl6",
+  "id": "1pc142c",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "Nogle grønne sko."
+  "text": "Nogle brune sko."
  },
  {
   "id": "17eochz",
@@ -5304,58 +5232,46 @@
   "text": "Nogle røde støvler."
  },
  {
-  "id": "104l0p5",
+  "id": "2ob4g3",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle grønne støvler."
+  "text": "Nogle brune støvler."
  },
  {
-  "id": "ijdl61",
+  "id": "15jsw6b",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle grønne støvler."
+  "text": "Nogle brune støvler."
  },
  {
-  "id": "1t7jirq",
+  "id": "1csi4b6",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle grøn støvler."
+  "text": "Nogle brun støvler."
  },
  {
-  "id": "xcleue",
+  "id": "163umeq",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle grøn støvler."
+  "text": "Nogle brun støvler."
  },
  {
-  "id": "1aa6zmq",
+  "id": "1o5jyj2",
   "who": "manden",
   "voice": "Puck",
-  "text": "Nogle grønt støvler."
+  "text": "Nogle brunt støvler."
  },
  {
-  "id": "6ioj2a",
+  "id": "1khwzse",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Nogle grønt støvler."
+  "text": "Nogle brunt støvler."
  },
  {
-  "id": "3oo747",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Nogle grøne støvler."
- },
- {
-  "id": "6bdvon",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Nogle grøne støvler."
- },
- {
-  "id": "7mas6z",
+  "id": "1syoi9x",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "Nogle grønne støvler."
+  "text": "Nogle brune støvler."
  },
  {
   "id": "1tjka26",
@@ -5526,70 +5442,58 @@
   "text": "En rød taske."
  },
  {
-  "id": "1lca7mu",
+  "id": "1xknps2",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn taske."
+  "text": "En brun taske."
  },
  {
-  "id": "1xmxwli",
+  "id": "18qzx7m",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn taske."
+  "text": "En brun taske."
  },
  {
-  "id": "1mez8y",
+  "id": "876tji",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt taske."
+  "text": "En brunt taske."
  },
  {
-  "id": "1biup76",
+  "id": "13ayc6m",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt taske."
+  "text": "En brunt taske."
  },
  {
-  "id": "fvmgax",
+  "id": "1u6x9j3",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne taske."
+  "text": "En brune taske."
  },
  {
-  "id": "1z0i6y1",
+  "id": "xaabof",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne taske."
+  "text": "En brune taske."
  },
  {
-  "id": "1fclv4z",
+  "id": "17pmw98",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne taske."
+  "text": "Et brun taske."
  },
  {
-  "id": "3ehaf7",
+  "id": "1w7kt0s",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne taske."
+  "text": "Et brun taske."
  },
  {
-  "id": "1eax2iw",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn taske."
- },
- {
-  "id": "15fnqy0",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn taske."
- },
- {
-  "id": "1jepqis",
+  "id": "60o9oo",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn taske."
+  "text": "En brun taske."
  },
  {
   "id": "euc9op",
@@ -5838,70 +5742,58 @@
   "text": "Et rødt skab."
  },
  {
-  "id": "132d2d3",
+  "id": "1h2r6pv",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grønt skab."
+  "text": "Et brunt skab."
  },
  {
-  "id": "1bsl7iv",
+  "id": "v5s3qb",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grønt skab."
+  "text": "Et brunt skab."
  },
  {
-  "id": "9gw5mf",
+  "id": "19d5ykj",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grøn skab."
+  "text": "Et brun skab."
  },
  {
-  "id": "cpc55j",
+  "id": "sew5ib",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grøn skab."
+  "text": "Et brun skab."
  },
  {
-  "id": "j4c9cm",
+  "id": "jtfjis",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grønne skab."
+  "text": "Et brune skab."
  },
  {
-  "id": "b3th12",
+  "id": "1wxkiic",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grønne skab."
+  "text": "Et brune skab."
  },
  {
-  "id": "1e4q8eg",
+  "id": "wplo7h",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grøne skab."
+  "text": "En brunt skab."
  },
  {
-  "id": "j1vjjc",
+  "id": "1tyq771",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grøne skab."
+  "text": "En brunt skab."
  },
  {
-  "id": "13ad29l",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En grønt skab."
- },
- {
-  "id": "1f8exqx",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En grønt skab."
- },
- {
-  "id": "6pli7x",
+  "id": "psbdtt",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "Et grønt skab."
+  "text": "Et brunt skab."
  },
  {
   "id": "14rf05c",
@@ -6150,70 +6042,58 @@
   "text": "Et rødt bord."
  },
  {
-  "id": "1mx3v1z",
+  "id": "1lqg9mr",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grønt bord."
+  "text": "Et brunt bord."
  },
  {
-  "id": "fww9p3",
+  "id": "zth6n7",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grønt bord."
+  "text": "Et brunt bord."
  },
  {
-  "id": "1113ol3",
+  "id": "1e0v1hf",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grøn bord."
+  "text": "Et brun bord."
  },
  {
-  "id": "149jo47",
+  "id": "x2l8f7",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grøn bord."
+  "text": "Et brun bord."
  },
  {
-  "id": "19pemvm",
+  "id": "f2jemo",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grønne bord."
+  "text": "Et brune bord."
  },
  {
-  "id": "eg9fqq",
+  "id": "so38ts",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grønne bord."
+  "text": "Et brune bord."
  },
  {
-  "id": "5500gk",
+  "id": "18vygcl",
   "who": "manden",
   "voice": "Puck",
-  "text": "Et grøne bord."
+  "text": "En brunt bord."
  },
  {
-  "id": "xi1sdw",
+  "id": "s0go5",
   "who": "seller",
   "voice": "Schedar",
-  "text": "Et grøne bord."
+  "text": "En brunt bord."
  },
  {
-  "id": "i4h76p",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "En grønt bord."
- },
- {
-  "id": "1mkcedd",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "En grønt bord."
- },
- {
-  "id": "1xowrat",
+  "id": "1n0o8fd",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "Et grønt bord."
+  "text": "Et brunt bord."
  },
  {
   "id": "y78tv0",
@@ -6420,70 +6300,58 @@
   "text": "En rød jakke."
  },
  {
-  "id": "l0ktmo",
+  "id": "yt0m84",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn jakke."
+  "text": "En brun jakke."
  },
  {
-  "id": "1vg6sdc",
+  "id": "2yn86c",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn jakke."
+  "text": "En brun jakke."
  },
  {
-  "id": "1oygr5g",
+  "id": "10dujhk",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt jakke."
+  "text": "En brunt jakke."
  },
  {
-  "id": "cl60b8",
+  "id": "1q63bd4",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt jakke."
+  "text": "En brunt jakke."
  },
  {
-  "id": "jx1us7",
+  "id": "1ucncm9",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne jakke."
+  "text": "En brune jakke."
  },
  {
-  "id": "1rgq08n",
+  "id": "xg0erl",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne jakke."
+  "text": "En brune jakke."
  },
  {
-  "id": "aa5ql",
+  "id": "1d77a3u",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne jakke."
+  "text": "Et brun jakke."
  },
  {
-  "id": "1m73mzx",
+  "id": "4qcx3e",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne jakke."
+  "text": "Et brun jakke."
  },
  {
-  "id": "s1qrku",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn jakke."
- },
- {
-  "id": "kk23em",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn jakke."
- },
- {
-  "id": "1y76exu",
+  "id": "1ism0pq",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn jakke."
+  "text": "En brun jakke."
  },
  {
   "id": "ivro5z",
@@ -6732,70 +6600,58 @@
   "text": "En rød pude."
  },
  {
-  "id": "utownm",
+  "id": "qhsiwe",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn pude."
+  "text": "En brun pude."
  },
  {
-  "id": "bq175e",
+  "id": "1thux5a",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn pude."
+  "text": "En brun pude."
  },
  {
-  "id": "sqqf3y",
+  "id": "1qm6r3u",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt pude."
+  "text": "En brunt pude."
  },
  {
-  "id": "1amsjvi",
+  "id": "piycwq",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt pude."
+  "text": "En brunt pude."
  },
  {
-  "id": "1lihbgr",
+  "id": "m3f2e5",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne pude."
+  "text": "En brune pude."
  },
  {
-  "id": "1d1a9gr",
+  "id": "1jcjldp",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne pude."
+  "text": "En brune pude."
  },
  {
-  "id": "ef591t",
+  "id": "11d55k4",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne pude."
+  "text": "Et brun pude."
  },
  {
-  "id": "1our7sh",
+  "id": "l3mhac",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne pude."
+  "text": "Et brun pude."
  },
  {
-  "id": "1sd0ggg",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn pude."
- },
- {
-  "id": "p25pps",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn pude."
- },
- {
-  "id": "1aa333w",
+  "id": "rewtao",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn pude."
+  "text": "En brun pude."
  },
  {
   "id": "1d85x6z",
@@ -7044,70 +6900,58 @@
   "text": "En rød kjole."
  },
  {
-  "id": "x6xad1",
+  "id": "apu8k9",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøn kjole."
+  "text": "En brun kjole."
  },
  {
-  "id": "9a6bx1",
+  "id": "1lm1mrd",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøn kjole."
+  "text": "En brun kjole."
  },
  {
-  "id": "1ifcp55",
+  "id": "rpdqq5",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønt kjole."
+  "text": "En brunt kjole."
  },
  {
-  "id": "1thyf3d",
+  "id": "ubbxnx",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønt kjole."
+  "text": "En brunt kjole."
  },
  {
-  "id": "1p4hxtu",
+  "id": "b4590",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grønne kjole."
+  "text": "En brune kjole."
  },
  {
-  "id": "latp2a",
+  "id": "2x2c6s",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grønne kjole."
+  "text": "En brune kjole."
  },
  {
-  "id": "9keink",
+  "id": "qg9ten",
   "who": "manden",
   "voice": "Puck",
-  "text": "En grøne kjole."
+  "text": "Et brun kjole."
  },
  {
-  "id": "16v0xow",
+  "id": "1r86g5b",
   "who": "seller",
   "voice": "Schedar",
-  "text": "En grøne kjole."
+  "text": "Et brun kjole."
  },
  {
-  "id": "1qig76r",
-  "who": "manden",
-  "voice": "Puck",
-  "text": "Et grøn kjole."
- },
- {
-  "id": "1jpinsz",
-  "who": "seller",
-  "voice": "Schedar",
-  "text": "Et grøn kjole."
- },
- {
-  "id": "yuz753",
+  "id": "i87ecj",
   "who": "impostor",
   "voice": "Fenrir",
-  "text": "En grøn kjole."
+  "text": "En brun kjole."
  },
  {
   "id": "32usz1",

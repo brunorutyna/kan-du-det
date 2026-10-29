@@ -90,7 +90,7 @@
   const SEED = [['indef', 'groen', 'sofa', 'en grønt sofa'], ['def', 'gul', 'lampe', 'den gul lampe'], ['indef', 'hvid', 'taeppe', 'et hvid tæppe'], ['def', 'stor', 'reol', 'den stor reol']];
   K.G.rettelser = {
     title: 'Rettelser', sub: 'Ret mærkerne',
-    lines() { return [{ w: 'gun', da: 'Den kan du ikke rette. Den er rød.' }]; },
+    lines() { return [{ w: 'gun', da: 'Det kan du ikke rette. Det er rødt.' }]; },
     async run(p) {
       const st = K.st;
       const { body } = K.gameFrame('Rettelser', 'Tryk på et mærke. Er det rigtigt?');
@@ -129,8 +129,8 @@
           const pick = await new Promise((res) => [...new Set(opts.map((o) => o.t))].forEach((x) => { const b = el('button', 'opt', K.daHTML(x)); b.type = 'button'; b.onclick = () => res(x); box.appendChild(b); }));
           ov.remove();
           if (t.scarf && st.scarf === 'roed' && pick === 'det grønne tørklæde') {
-            body.appendChild(K.renderLine({ w: 'gun', da: 'Den kan du ikke rette. Den er rød.', en: 'You cannot fix that one. It is red.' }));
-            K.audio.say('gun', 'Den kan du ikke rette. Den er rød.');
+            body.appendChild(K.renderLine({ w: 'gun', da: 'Det kan du ikke rette. Det er rødt.', en: 'You cannot fix that. It is red.' }));
+            K.audio.say('gun', 'Det kan du ikke rette. Det er rødt.');
             K.audio.sfx('bad'); return;
           }
           cell.classList.add('judged'); left--;
@@ -283,6 +283,37 @@
   };
 
   // ============ 10. Hvem er han? ============
+  // kind of mistake: which ending was said instead of which (t/e/none), or a wrong article
+  function errKind(said, right) {
+    const a = said.split(' '), b = right.split(' ');
+    if (a.length !== b.length) return 'other';
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) {
+      if (i === 0) return 'art';
+      const end = (w) => (w.endsWith('t') ? 't' : w.endsWith('e') ? 'e' : '0');
+      return end(a[i]) + '/' + end(b[i]);
+    }
+    return 'same';
+  }
+  function phrasePool() {
+    const P = [];
+    ['containerne', 'sikke', 'lilla'].forEach((g) => K.G[g].phrases().forEach((p) => P.push(p)));
+    K.G.containerne.phrases().forEach(([d, a, n]) => P.push([d === 'def' ? 'indef' : 'def', a, n]));
+    return P;
+  }
+  // the same kind of mistake, on a different thing
+  function analogue(m) {
+    const kind = errKind(m.said, m.right);
+    const cands = K.shuffle(phrasePool().filter(([d, a, n]) => n !== m.noun));
+    for (const [d, a, n] of cands) {
+      const right = K.np(d, [a], n);
+      const forms = K.allForms(d, a, n);
+      const same = forms.find((f) => f !== right && errKind(f, right) === kind);
+      const diff = forms.find((f) => f !== right && errKind(f, right) !== kind);
+      if (same && diff) return { same, right, diff };
+    }
+    return { same: m.said, right: m.right, diff: m.right };
+  }
+  K.errKind = errKind;
   // The fingerprint: the real writer repeats exactly the mistakes on the tags.
   K.G.hvem = {
     title: 'Hvem er han?', sub: 'Hvem skrev mærkerne?',
@@ -313,9 +344,9 @@
       for (const m of rounds) {
         area.innerHTML = '';
         const tagEl = el('div', 'tagtext big', K.daHTML(m.said)); area.appendChild(el('div', 'frame', 'Mærket:')); area.appendChild(tagEl);
-        const others = K.allForms(m.det, m.adj, m.noun).filter((f) => f !== m.said && f !== m.right);
-        const lines = { manden: m.said, impostor: m.right, seller: others.length ? K.pick(others) : m.right };
-        area.appendChild(el('div', 'frame', 'Tryk på en mand for at høre ham. Tryk igen for at vælge ham.'));
+        const an = analogue(m);
+        const lines = { manden: an.same, impostor: an.right, seller: an.diff };
+        area.appendChild(el('div', 'frame', 'Hvem laver samme slags fejl? Tryk på en mand for at høre ham. Tryk igen for at vælge ham.'));
         const choice = await new Promise((res) => cells.forEach((c) => {
           c.onclick = async () => {
             if (c.classList.contains('heard')) { res(c.dataset.w); return; }
@@ -328,7 +359,7 @@
         }));
         cells.forEach((x) => x.classList.remove('heard'));
         if (choice === 'manden') { score++; K.feedback(area, true); }
-        else { K.sock(1, 'forkert mand'); K.feedback(area, false, 'Manden sagde: ' + m.said, 'The writer makes the same mistake as the tag.'); }
+        else { K.sock(1, 'forkert mand'); K.feedback(area, false, 'Manden sagde: ' + an.same, 'Same kind of slip as the tag: ' + m.said + ' → ' + m.right + '.'); }
         await wait(K.fast ? 50 : 1600);
       }
       area.innerHTML = '';
@@ -362,6 +393,8 @@
       K.shuffle(extra).forEach(([noun, adj]) => { if (items.length < 6) items.push({ noun, adj, bound: false }); });
       if (st.scarf === 'groen') items.push({ noun: 'toerklaede', adj: 'groen', bound: true, scarf: true });
       items = K.shuffle(items);
+      // the suit she won at the auction takes up half the flat
+      if (st.suit) { items = items.slice(0, 3); items.unshift({ noun: 'jakkesaet', adj: 'ternet', bound: true }); stage.appendChild(el('div', 'think', 'The checked suit takes up half the flat. There is room for much less now.')); }
       let score = 0;
       for (const it of items) {
         const area = el('div', 'sal');
@@ -409,8 +442,8 @@
       const ROUNDS = K.fast ? 2 : 4;
       for (let i = 0; i < ROUNDS; i++) {
         const noun = await step('En ting i dit hjem:', K.shuffle(F_NOUNS).slice(0, 6), (n) => K.daHTML(K.nounForm(n)));
-        const det = await step('Din, dit eller dine?', ['min', 'mit', 'mine']);
-        const adj = await step('Hvilken farve?', K.shuffle(F_ADJ).slice(0, 6), (a) => K.daHTML(K.A[a].base));
+        const det = await step('Min, mit eller mine?', ['min', 'mit', 'mine']);
+        const adj = await step('Vælg et adjektiv:', K.shuffle(F_ADJ).slice(0, 6), (a) => K.daHTML(K.A[a].base));
         const right = K.adjForm(adj, noun, 'def');
         const forms = K.shuffle([...new Set([right].concat(K.adjVariants(adj)))].slice(0, 3).concat(right)).filter((v, j, a) => a.indexOf(v) === j);
         const form = await step('Med den rigtige endelse:', forms);

@@ -56,7 +56,7 @@
       const g = K.G[id]; const open = K.save.stats.unlocked[id];
       const b = el('button', 'row' + (open ? '' : ' locked'), `<b>${open ? g.title : '???'}</b><span>${open ? g.sub : 'Låst'}</span><i>${K.save.stats.ranks[id] || ''}</i>`); b.type = 'button';
       if (open) b.onclick = async () => {
-        K.st = K.newRun(); K.st.who = ['rettelser', 'auktion', 'mine'].includes(id) ? 'ellen' : 'holger'; K.st.solo = true; K.hud();
+        K.st = K.newRun(); K.st.who = ['rettelser', 'auktion', 'mine'].includes(id) ? 'ellen' : 'holger'; K.st.solo = true; K.st.clock = ''; K.st.socksHidden = false; K.hud();
         if (id === 'rettelser') { K.st.tags = []; }
         K.audio.playMusic(id === 'lukketid' ? 'lukketid' : id === 'auktion' ? 'auktion' : 'duel');
         try { await g.run({ story: false }); } catch (e) { console.error(e); }

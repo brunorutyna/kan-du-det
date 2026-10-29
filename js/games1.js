@@ -81,7 +81,8 @@
   K.G.containerne = {
     title: 'Containerne', sub: 'Unika eller containeren?',
     lines() {
-      const L = [{ w: 'gun', da: 'Den, det, de: så bliver den unik.' }, { w: 'gun', da: 'En, et, nogle: så er den bare en af mange.' }, { w: 'stol', da: 'Mig? Den grå stol? Tak!' }];
+      const L = CONT_ITEMS.filter((it) => it.adj === 'groen').map((it) => ({ w: 'gun', da: K.cap(K.np('indef', ['roed'], it.noun)) + '.' }));
+      L.push({ w: 'gun', da: 'Den, det, de: så bliver den unik.' }, { w: 'gun', da: 'En, et, nogle: så er den bare en af mange.' }, { w: 'stol', da: 'Mig? Den grå stol? Tak!' });
       Object.values(NOTE).forEach((t) => L.push({ w: 'gun', da: t }));
       return L;
     },
@@ -103,6 +104,11 @@
           tipBox.appendChild(K.renderLine({ w: 'gun', da: 'En, et, nogle: så er den bare en af mange.', en: 'En, et, nogle: then it is just one of many.' }));
           body.appendChild(tipBox);
           await K.audio.say('gun', 'Den, det, de: så bliver den unik.');
+        }
+        if (it.adj === 'groen' && p.story) {
+          const lie = K.cap(K.np('indef', ['roed'], it.noun)) + '.';
+          const gl = el('div', 'tipbox'); gl.appendChild(K.renderLine({ w: 'gun', da: lie, en: 'A red ' + K.N[it.noun].en + '.' })); body.appendChild(gl);
+          K.audio.say('gun', lie);
         }
         const right = K.np(it.kind === 'unik' ? 'def' : 'indef', [it.adj], it.noun);
         const other = K.np(it.kind === 'unik' ? 'indef' : 'def', [it.adj], it.noun);
@@ -159,7 +165,7 @@
   ];
   K.G.sikke = {
     title: 'Sikke-salve', sub: 'Svar i takt',
-    lines() { const L = []; DONORS.forEach((d) => d.items.forEach(([a, n]) => L.push({ w: d.who, da: K.np('sikke', [a], n) + '!' }))); return L; },
+    lines() { const L = []; DONORS.forEach((d) => d.items.forEach(([a, n]) => { L.push({ w: d.who, da: K.np('sikke', [a], n) + '!' }); if (a === 'groen') L.push({ w: 'gun', da: K.cap(K.np('indef', ['roed'], n)) + '.' }); })); return L; },
     phrases() { const P = []; DONORS.forEach((d) => d.items.forEach(([a, n]) => P.push(['indef', a, n]))); return P; },
     async run(p) {
       const st = K.st;
@@ -178,10 +184,12 @@
           const options = K.shuffle([...new Set(K.adjVariants(adj))].filter((f) => f !== right)).slice(0, 2).concat([right]);
           const area = el('div', 'sal');
           const aura = n.g === 'n' ? 'T' : n.g === 'p' ? 'E' : '·';
-          area.innerHTML = `<div class="aura a-${n.g}">${aura}${aura}${aura}</div>`;
+          // the aura (gender hint) only for the first donor; after that the player is on his own
+          area.innerHTML = d === donors[0] && p.story !== false ? `<div class="aura a-${n.g}">${aura}${aura}${aura}</div>` : '';
           const c = await card(noun, [adj], 170); area.appendChild(c);
           const shout = el('div', 'shout', K.daHTML(`Sikke ${K.ART.indef[n.g]} `) + '<span class="gap">?</span> ' + K.daHTML(K.nounForm(noun) + '!'));
           area.appendChild(shout);
+          if (adj === 'groen' && p.story) { const lie = K.cap(K.np('indef', ['roed'], noun)) + '.'; area.appendChild(K.renderLine({ w: 'gun', da: lie, en: 'A red ' + n.en + '.' })); K.audio.say('gun', lie); }
           const ring = el('div', 'ring'); area.appendChild(ring);
           stage.appendChild(area);
           const beat = K.fast ? 400 : 2200;
@@ -355,7 +363,7 @@
   // ============ 5. Lukketid ============
   // One-thumb bullet heaven. Drag Holger; tags fire at the nearest thing. Tag the thing that matches the display.
   const SW_NOUNS = ['sofa', 'lampe', 'kommode', 'stol', 'slips', 'hue', 'sko', 'stoevler', 'taske', 'skab', 'bord', 'jakke', 'pude', 'kjole'];
-  const SW_COLS = ['roed', 'groen', 'gul', 'blaa', 'hvid', 'sort'];
+  const SW_COLS = ['roed', 'brun', 'gul', 'blaa', 'hvid', 'sort'];
   K.G.lukketid = {
     title: 'Lukketid', sub: 'Træk med én finger',
     lines() { return [{ w: 'gun', da: 'Klokken er tolv. Porten lukker.' }, { w: 'holger', da: 'Min jakke!' }]; },
@@ -376,13 +384,13 @@
       for (const [n, c] of pool) await spriteOf(n, c);
       const holgerImg = await K.loadImg('img/o/holger.webp');
       const me = { x: W / 2, y: H * 0.62, r: 26 * u, inv: 0 };
-      let things = [], shots = [], gems = [], xp = 0, lvl = 1, minutes = 3, tagged = 0, wrong = 0, t = 0, want = null, wantT = 0, jacketDone = !p.story, paused = false;
+      let things = [], shots = [], gems = [], xp = 0, lvl = 1, minutes = 5, tagged = 0, wrong = 0, t = 0, want = null, wantT = 0, jacketDone = !p.story, paused = false;
       const DUR = K.fast ? 6 : 90;
       const spawn = () => {
         const [n, c] = Math.random() < 0.45 && want ? [want.n, want.c] : K.pick(pool);
-        const side = Math.floor(Math.random() * 4), m = 40 * u;
+        const side = K.pick([0, 1, 2, 2, 2]), m = 40 * u;
         const x = side === 0 ? -m : side === 1 ? W + m : Math.random() * W, y = side === 2 ? -m : side === 3 ? H + m : Math.random() * H;
-        const sp = (0.5 + Math.random() * 0.5 + t / 90) * u * (lvl >= 3 ? 0.8 : 1);
+        const sp = (0.25 + Math.random() * 0.25 + t / 240) * u * (lvl >= 3 ? 0.8 : 1);
         things.push({ x, y, n, c, sp, r: 26 * u, angry: 0, frozen: 0, wob: Math.random() * 6 });
       };
       const pickWant = () => {
@@ -407,16 +415,17 @@
           if (!paused) {
             t += dt; wantT += dt; fireT += dt; spawnT += dt; me.inv = Math.max(0, me.inv - dt);
             if (wantT > 6.5) pickWant();
-            if (spawnT > Math.max(0.35, 1.1 - t / 70)) { spawnT = 0; spawn(); }
+            if (spawnT > Math.max(0.65, 1.5 - t / 90)) { spawnT = 0; spawn(); }
             if (target) { const dx = target.x - me.x, dy = target.y - me.y, d = Math.hypot(dx, dy); if (d > 2) { const v = Math.min(d, 380 * u * dt); me.x += dx / d * v; me.y += dy / d * v; } }
             me.x = Math.max(me.r, Math.min(W - me.r, me.x)); me.y = Math.max(me.r, Math.min(H - me.r, me.y));
             // auto fire at nearest live thing
             const rate = lvl >= 2 ? 0.28 : 0.42;
             if (fireT > rate) {
               fireT = 0;
-              const live = things.filter((o) => !o.frozen).sort((a, b) => Math.hypot(a.x - me.x, a.y - me.y) - Math.hypot(b.x - me.x, b.y - me.y));
+              // the gun aims at the nearest thing that matches its display; anything in the way gets the tag instead
+              const live = things.filter((o) => !o.frozen && want && o.n === want.n && o.c === want.c).sort((a, b) => Math.hypot(a.x - me.x, a.y - me.y) - Math.hypot(b.x - me.x, b.y - me.y));
               const tg = live[0];
-              if (tg && Math.hypot(tg.x - me.x, tg.y - me.y) < 340 * u) {
+              if (tg && Math.hypot(tg.x - me.x, tg.y - me.y) < 300 * u) {
                 const a = Math.atan2(tg.y - me.y, tg.x - me.x);
                 shots.push({ x: me.x, y: me.y, vx: Math.cos(a) * 520 * u, vy: Math.sin(a) * 520 * u, life: 1 });
                 if (lvl >= 4) shots.push({ x: me.x, y: me.y, vx: Math.cos(a + 0.25) * 520 * u, vy: Math.sin(a + 0.25) * 520 * u, life: 1 });
@@ -426,9 +435,12 @@
             shots.forEach((s) => { s.x += s.vx * dt; s.y += s.vy * dt; s.life -= dt; });
             things.forEach((o) => {
               if (o.frozen) { o.frozen += dt; return; }
-              const dx = me.x - o.x, dy = me.y - o.y, d = Math.hypot(dx, dy) || 1, sp = o.sp * (o.angry ? 1.8 : 1) * 60;
-              o.x += dx / d * sp * dt; o.y += dy / d * sp * dt; o.wob += dt * 6;
-              if (d < o.r + me.r * 0.7 && !me.inv) { minutes--; me.inv = 1.4; K.audio.sfx('bad'); s.classList.add('shake'); setTimeout(() => s.classList.remove('shake'), 300); o.x -= dx / d * 120 * u; o.y -= dy / d * 120 * u; }
+              // things run for the gate (bottom centre); only angry ones (wrong tag) hunt Holger
+              const dx = me.x - o.x, dy = me.y - o.y, d = Math.hypot(dx, dy) || 1, sp = o.sp * (o.angry ? 1.5 : 1) * 60;
+              const gx = (o.angry ? me.x : W / 2) - o.x, gy = (o.angry ? me.y : H + 80 * u) - o.y, gd = Math.hypot(gx, gy) || 1;
+              o.x += (gx / gd * sp + Math.sin(o.wob) * 18 * u) * dt; o.y += gy / gd * sp * dt; o.wob += dt * 3;
+              if (d < o.r + me.r * 0.7 && !me.inv && !o.angry) { o.x -= dx / d * 6 * u; o.y -= dy / d * 6 * u; }
+              if (d < o.r + me.r * 0.7 && !me.inv && o.angry) { minutes--; me.inv = 2; o.angry = 0; K.audio.sfx('bad'); s.classList.add('shake'); setTimeout(() => s.classList.remove('shake'), 300); o.x -= dx / d * 170 * u; o.y -= dy / d * 170 * u; }
             });
             shots.forEach((sh) => {
               if (sh.life <= 0) return;
@@ -440,11 +452,11 @@
                 break;
               }
             });
-            gems = gems.filter((gm) => { const d = Math.hypot(gm.x - me.x, gm.y - me.y); const mag = (lvl >= 3 ? 160 : 70) * u; if (d < mag) { gm.x += (me.x - gm.x) * 0.2; gm.y += (me.y - gm.y) * 0.2; } if (d < me.r) { xp++; if (xp >= lvl * 3) { xp = 0; lvl++; K.toast('NIVEAU ' + lvl + '! ' + ['', '', 'Hurtigere mærker', 'Magnet og roligere ting', 'Dobbelte mærker'][Math.min(lvl, 4)], 'good'); } return false; } return true; });
+            gems = gems.filter((gm) => { const d = Math.hypot(gm.x - me.x, gm.y - me.y); const mag = (lvl >= 3 ? 220 : 120) * u; if (d < mag) { gm.x += (me.x - gm.x) * 0.2; gm.y += (me.y - gm.y) * 0.2; } if (d < me.r) { xp++; if (xp >= lvl * 3) { xp = 0; lvl++; K.toast('NIVEAU ' + lvl + '! ' + ['', '', 'Hurtigere mærker', 'Magnet og roligere ting', 'Dobbelte mærker'][Math.min(lvl, 4)], 'good'); } return false; } return true; });
             things = things.filter((o) => !(o.frozen > 0.6) && o.x > -200 * u && o.x < W + 200 * u && o.y > -200 * u && o.y < H + 200 * u);
             shots = shots.filter((s) => s.life > 0);
             // the jacket moment, halfway through
-            if (!jacketDone && t > DUR * 0.5) {
+            if (!jacketDone && (t > Math.min(12, DUR * 0.5) || minutes <= 1)) {
               jacketDone = true; paused = true;
               const ov = el('div', 'freeze');
               ov.appendChild(el('div', 'onoma', 'RRRIIIIP!'));
@@ -459,7 +471,7 @@
               if (st.jacket === 'sock') { K.sock(1, 'mit → min'); K.mistake({ said: 'mit gule jakke', right: 'min gule jakke', noun: 'jakke', adj: 'gul', det: 'min', day: 'holger' }); }
               ov.remove(); paused = false; last = performance.now();
             }
-            if (t >= DUR || minutes <= 0) { running = false; res(); return; }
+            if (t >= DUR || (minutes <= 0 && jacketDone)) { running = false; res(); return; }
           }
           // draw
           g.clearRect(0, 0, W, H);
@@ -475,7 +487,7 @@
           if (holgerImg) g.drawImage(holgerImg, me.x - me.r * 1.6, me.y - me.r * 2.2, me.r * 3.2, me.r * 3.2); else { g.fillStyle = '#ffd60a'; g.beginPath(); g.arc(me.x, me.y, me.r, 0, 7); g.fill(); }
           g.restore();
           const left = Math.max(0, Math.ceil(DUR - t));
-          stats.innerHTML = `<span>⏱ 11:${String(58 + Math.floor((DUR - left) / 45)).padStart(2, '0')}</span><span>MÆRKET ${tagged}</span><span>NIV ${lvl}</span><span>${'▮'.repeat(Math.max(0, minutes))}${'▯'.repeat(3 - Math.max(0, minutes))}</span>`;
+          stats.innerHTML = `<span>⏱ 11:${String(58 + Math.floor((DUR - left) / 45)).padStart(2, '0')}</span><span>MÆRKET ${tagged}</span><span>NIV ${lvl}</span><span>${'▮'.repeat(Math.max(0, minutes))}${'▯'.repeat(5 - Math.max(0, minutes))}</span>`;
           requestAnimationFrame(loop);
         };
         requestAnimationFrame(loop);
@@ -483,7 +495,7 @@
       await end;
       if (!st.jacket) st.jacket = 'generic';
       window.__lukketid = { tagged, wrong };
-      await K.resultStamp('lukketid', Math.min(tagged, 20), 20, minutes <= 0 ? 'Porten lukkede over dig.' : 'Klokken er tolv.');
+      await K.resultStamp('lukketid', Math.min(tagged, 30) + (minutes > 0 ? 10 : 0), 40, minutes <= 0 ? 'Porten lukkede over dig.' : 'Klokken er tolv.');
       return tagged;
     },
   };

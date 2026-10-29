@@ -21,7 +21,7 @@
     return {
       step: 0, socks: 400, mistakes: [], tags: [], bound: [], follower: null, gunMine: false,
       scarf: null, jacket: null, stirren: [], auction: null, money: 1000, flat: [], ending: null,
-      english: 0, ranks: {}, fixed: 0, recoloured: false, suit: false, clock: '08:00', who: 'holger',
+      english: 0, ranks: {}, fixed: 0, recoloured: false, suit: false, clock: '08:00', who: 'holger', socksHidden: true,
     };
   };
 
@@ -83,6 +83,8 @@
     const st = K.st;
     h.hidden = !st;
     if (!st) return;
+    $('#crate').hidden = !!st.socksHidden;
+    document.body.classList.toggle('gun-green', !!st.recoloured);
     $('#socks').textContent = st.socks;
     $('#clock').textContent = st.clock || '';
   }
@@ -93,7 +95,7 @@
     hud();
     const b = $('#crate'); if (b) { b.classList.remove('bump', 'drop'); void b.offsetWidth; b.classList.add(n > 0 ? 'bump' : 'drop'); }
     K.audio.sfx(n > 0 ? 'sock' : 'unsock');
-    if (why) toast((n > 0 ? '+' : '') + n + ' sok · ' + why, n > 0 ? 'bad' : 'good');
+    if (why && !st.socksHidden) toast((n > 0 ? '+' : '') + n + ' sok · ' + why, n > 0 ? 'bad' : 'good');
   };
   function toast(t, cls) {
     const e = el('div', 'toast ' + (cls || ''), t); document.body.appendChild(e);
@@ -153,6 +155,8 @@
       box.appendChild(row); row.scrollIntoView({ block: 'end', behavior: K.fast ? 'auto' : 'smooth' });
       let spoken = Promise.resolve();
       if (l.da && l.w) spoken = K.audio.say(l.w, l.da);
+      // English captions and thoughts flow on by themselves; the player taps after Danish lines and at the end
+      if (!l.da && i < lines.length - 1) { await wait(350); continue; }
       await new Promise((res) => { next.onclick = () => { K.audio.sfx('tap'); res(); }; box.onclick = (e) => { if (e.target === box) res(); }; });
       if (l.da && l.w && !K.fast) await Promise.race([spoken, wait(10)]);
     }

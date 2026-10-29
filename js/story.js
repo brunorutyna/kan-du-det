@@ -39,7 +39,7 @@
       { w: 'gun', da: 'Fire hundrede beige sokker.', en: 'Four hundred beige socks.' },
       { th: 'Holger aims the gun at the crate. "De beige sokker." The tag prints, sticks, and slides off. Again. It slides off again.' },
       { w: 'gun', da: 'Ingen kan sige de om dem.', en: 'Nobody can say "the" (de) about them.' },
-      { cap: 'Top right of your screen: the crate. That number is your score. Lower is better.' },
+      { th: 'Holger decides not to think about the crate. It is just socks.' },
     ] },
     { t: 'panel', if: (st) => st.follower, img: 'chairs', lines: [
       { w: 'stol', da: 'Hej igen!', en: 'Hello again!' },
@@ -59,6 +59,7 @@
     ] },
     { t: 'game', id: 'lilla' },
     // Twist 1: the crate grows by his own mistakes
+    { t: 'do', fn: (st) => { st.socksHidden = false; K.hud(); const c = document.querySelector('#crate'); if (c) { c.classList.remove('roll'); void c.offsetWidth; c.classList.add('roll'); } K.audio.sfx('boom'); } },
     { t: 'panel', img: 'crate', fx: 'push dark', sfx: 'DUN', clock: '11:20', music: 'stirren', lines: [
       (st) => ({ cap: `The crate. The counter says ${st.socks}. This morning it said 400.` }),
       (st) => {
@@ -68,6 +69,7 @@
         return { th: 'Still 400. Then a man drops off "en eller anden stol", some chair or other, without looking at it. Click. 401.' };
       },
       { w: 'gun', da: 'Hver gang nogen siger noget forkert, kommer der en sok.', en: 'Every time someone says something wrong, a sock arrives.' },
+      { cap: 'The crate\'s counter now sits in the corner of your screen. It is your score. Lower is better.' },
     ] },
     // the narrator is the gun
     { t: 'panel', img: 'gun', fx: 'zoom', sfx: 'BANK… BANK…', lines: [
@@ -121,7 +123,7 @@
     { t: 'panel', img: 'sondag', fx: 'push', music: 'soendag', lines: [
       { cap: 'The flea market. Every stall is full of things she saw yesterday at the recycling station.' },
       { th: 'And every thing wears a tag. All in one man\'s handwriting.' },
-      (st) => { const t = T(st, 0); return t ? { cap: `One tag says: "${t.text}". Another says "${(T(st, 1) || t).text}".` } : { cap: 'Every tag is perfect. Every one. Except one.' }; },
+      (st) => { const t = T(st, 0); return t ? { cap: `One tag says: "${t.text}". Another says "${(T(st, 1) || t).text}".` } : (st.scarf === 'roed' ? { cap: 'Every tag is perfect. Every one. Except, perhaps, one.' } : { cap: 'Every tag is perfect. Every single one.' }); },
       { th: 'Yesterday was not sorting. Yesterday was writing today.' },
     ] },
     { t: 'game', id: 'rettelser' },
@@ -148,10 +150,12 @@
     ] },
     // the gun changes hands
     { t: 'panel', if: (st) => !st.gunMine, img: 'gun', fx: 'zoom', lines: [
-      { w: 'auctioneer', da: 'Og den her? Den er i stykker. Den siger rød om alt, der er grønt. Halvtreds kroner.', en: 'And this one? It\'s broken. It says red about everything green. Fifty kroner.' },
-      { th: 'Ellen has heard that voice before. At ten to twelve yesterday, it said "Et rødt tørklæde". She pays.' },
+      (st) => st.money > 0 ? { w: 'auctioneer', da: 'Og den her? Den er i stykker. Den siger rød om alt, der er grønt. Halvtreds kroner.', en: 'And this one? It\'s broken. It says red about everything green. Fifty kroner.' }
+        : { w: 'auctioneer', da: 'Ingen penge? Så tag den bare. Den er i stykker. Den siger rød om alt, der er grønt.', en: 'No money? Then just take it. It is broken. It says red about everything green.' },
+      (st) => ({ th: 'Ellen has heard that voice before. At ten to twelve yesterday, it said "Et rødt tørklæde".' + (st.money > 0 ? ' She pays.' : ' She takes it.') }),
       { w: 'gun', da: 'Ingen har nogensinde sagt grøn til mig. Ikke rigtigt.', en: 'Nobody has ever said green to me. Not properly.' },
     ] },
+    { t: 'do', if: (st) => !st.gunMine && st.money > 0, fn: (st) => { st.money -= 50; } },
     { t: 'game', if: (st) => !st.gunMine, id: 'farven' },
     { t: 'panel', img: 'sondag', clock: '13:00', music: 'soendag', lines: [
       { cap: 'Near the coffee stall: three men. One of them wrote the tags.' },

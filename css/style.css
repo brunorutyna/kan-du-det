@@ -58,6 +58,9 @@ button .w { border-bottom: 0; }
 .line .tools { position: absolute; right: 6px; top: 6px; display: flex; gap: 4px; }
 .mini { min-width: 30px; min-height: 30px; background: transparent; border: 2px solid currentColor; font-family: var(--display); font-size: 11px; padding: 0 5px; opacity: .75; }
 .line.cap { background: var(--cap); color: #000; transform: rotate(-.6deg); }
+body.gun-green .line.cap { background: #4be37a; }
+#crate.roll { animation: roll 1.6s; }
+@keyframes roll { 0% { transform: scale(2.2); background: var(--bad); } 100% { transform: none; } }
 .line.cap .da { font-family: var(--display); font-weight: 400; font-size: 19px; }
 .line.b-holger { background: #fff; color: #000; }
 .line.b-ellen { background: #fff; color: #000; border-color: var(--pink); box-shadow: 4px 4px 0 var(--pink); }
@@ -199,7 +202,7 @@ button .w { border-bottom: 0; }
 .stamp { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.82); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
 .stamp .rk { font-family: var(--display); font-size: 140px; line-height: 1; -webkit-text-stroke: 3px #000; transform: rotate(-12deg); animation: slam .45s cubic-bezier(.2,1.6,.4,1); }
 .rk-S { color: var(--acid); text-shadow: 8px 8px 0 var(--pink); } .rk-A { color: var(--cyan); text-shadow: 8px 8px 0 #000; } .rk-B { color: var(--fg); } .rk-C { color: var(--bad); }
-.rk-s.rk-S { color: var(--acid); } .rk-s.rk-C { color: var(--bad); }
+.rk-s { text-shadow: none !important; -webkit-text-stroke: 0 !important; } .rk-s.rk-S { color: var(--acid); } .rk-s.rk-C { color: var(--bad); }
 .stamp .sc { font-family: var(--display); font-size: 22px; } .stamp .ex { font-size: 18px; color: var(--dim); }
 .stamp .next { align-self: center; }
 

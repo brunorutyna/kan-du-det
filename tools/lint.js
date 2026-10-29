@@ -9,7 +9,7 @@ try { JSON.parse(fs.readFileSync(path.join(__dirname, 'lines.json'))).forEach((l
 K.STORY.forEach((s) => { if (s.t === 'choice') (typeof s.options === 'function' ? [] : s.options).forEach((o) => o.da && texts.add(o.da)); });
 Object.values(K.G).forEach((g) => g.phrases && g.phrases().forEach(([d, a, n]) => K.allForms(d, a, n).forEach((f) => texts.add(f))));
 ['min', 'def', 'indef'].forEach((d) => Object.keys(K.N).forEach((n) => ['groen', 'gammel', 'lille', 'prikket'].forEach((a) => texts.add(K.np(d, [a], n)))));
-['Din, dit eller dine?', 'En ting i dit hjem:', 'Hvilken farve?', 'Bag tæppet:', 'Min, mit, mine', 'Med den rigtige endelse:', 'Holger svarer:', 'Mærket siger:', 'Det er rigtigt.', 'Mærket:', 'Der er kun én.', 'Der er hundredvis af dem.'].forEach((t) => texts.add(t));
+['Min, mit eller mine?', 'En ting i dit hjem:', 'Vælg et adjektiv:', 'Bag tæppet:', 'Min, mit, mine', 'Med den rigtige endelse:', 'Holger svarer:', 'Mærket siger:', 'Det er rigtigt.', 'Mærket:', 'Hvem laver samme slags fejl? Tryk på en mand for at høre ham. Tryk igen for at vælge ham.', 'Der er kun én.', 'Der er hundredvis af dem.'].forEach((t) => texts.add(t));
 const missing = new Map();
 texts.forEach((t) => (t.match(/[A-Za-zÆØÅæøåÉé'-]+/g) || []).forEach((w) => { if (!K.glossOf(w)) missing.set(w.toLowerCase(), t); }));
 missing.forEach((t, w) => err.push(`no gloss: "${w}"  (in: ${t})`));

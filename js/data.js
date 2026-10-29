@@ -225,7 +225,7 @@
     findes: 'exists', blev: 'became', bliver: 'becomes / stays', kun: 'only', bange: 'afraid', rustning: 'armour', tager: 'take(s)', rette: 'correct, fix', nummer: 'number',
     damen: 'the lady', stiger: 'rises', falder: 'falls', tilbage: 'back', næste: 'next', knapper: 'buttons', perfekt: 'perfectly', sidste: 'last', chance: 'chance',
     folk: 'people', 'åh': 'oh', stemme: 'voice', står: 'stands (hvad står der = what does it say)', huske: 'remember', endelig: 'finally', hvordan: 'how',
-    rigtige: 'right, correct', endelse: 'ending', svarer: 'answers', ting: 'thing(s)', jakkesættet: 'the suit', tæppet: 'the curtain (stage) / the rug', hundredvis: 'hundreds', bag: 'behind', stil: 'style', hvilken: 'which', farve: 'colour', gule: 'yellow (def./pl.)', går: 'goes', kunne: 'could',
+    rigtige: 'right, correct', endelse: 'ending', svarer: 'answers', ting: 'thing(s)', jakkesættet: 'the suit', tæppet: 'the curtain (stage) / the rug', hundredvis: 'hundreds', bag: 'behind', vælg: 'choose!', adjektiv: 'adjective', laver: 'makes', samme: 'same', slags: 'kind', fejl: 'mistake', tryk: 'tap!', høre: 'hear', vælge: 'choose', stil: 'style', hvilken: 'which', farve: 'colour', gule: 'yellow (def./pl.)', går: 'goes', kunne: 'could',
   });
   // learner forms of adjectives: same meaning, so tapping never gives the answer away
   Object.keys(A).forEach((k) => adjVariants(k).forEach((f) => { DICT[f] = DICT[f] || A[k].en; }));
