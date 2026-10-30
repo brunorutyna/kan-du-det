@@ -41,7 +41,7 @@
 
   // ---------- save (versioned; old saves load with defaults) ----------
   const SAVE_V = 1;
-  const defaults = () => ({ v: SAVE_V, settings: { music: true, sfx: true, voice: true }, stats: { runs: 0, done: 0, ranks: {}, endings: {}, missed: {} }, run: null });
+  const defaults = () => ({ v: SAVE_V, settings: { music: true, sfx: true, voice: true, musicVol: 0.7, sfxVol: 0.8, voiceVol: 1 }, stats: { runs: 0, done: 0, ranks: {}, endings: {}, missed: {} }, run: null });
   K.loadSave = function () {
     let s = {};
     try { s = JSON.parse(localStorage.getItem('dk.' + K.CONFIG.id)) || {}; } catch (e) { s = {}; }
@@ -100,7 +100,7 @@
     if (!S) { K.report(new Error('unknown screen: ' + id)); return; }
     if (cur) cur._dispose();
     modals.forEach((m) => m.remove()); modals.clear();
-    K.VOICE.stop(); hideTip();
+    K.VOICE.settle(); hideTip();
     const t = ++token;
     const root = $('#screen'); root.className = 'screen s-' + id; root.innerHTML = '';
     cur = makeCtx(t, id); cur.params = params || {}; K.cur = cur;
@@ -130,9 +130,12 @@
     root.appendChild(b);
   }
   K.settingsUI = function (box) {
-    [['music', 'Musik'], ['sfx', 'Lyde'], ['voice', 'Dansk stemme']].forEach(([k, label]) => {
-      const row = el('label', 'toggle', `<input type="checkbox" ${K.settings[k] ? 'checked' : ''}> ${label}`);
-      row.querySelector('input').addEventListener('change', (e) => { K.settings[k] = e.target.checked; K.persist(); if (k === 'music') K.MUSIC.refresh(); });
+    [['music', 'Musik', 0.7], ['sfx', 'Lyde', 0.8], ['voice', 'Dansk stemme', 1]].forEach(([k, label, d]) => {
+      const cur = K.settings[k] === false ? 0 : (K.settings[k + 'Vol'] == null ? d : K.settings[k + 'Vol']);
+      const row = el('label', 'toggle slider', `<span>${label}</span><input type="range" min="0" max="100" step="5" value="${Math.round(cur * 100)}"><b>${Math.round(cur * 100)}</b>`);
+      const inp = row.querySelector('input'), out = row.querySelector('b');
+      inp.addEventListener('input', () => { const v = +inp.value / 100; K.settings[k + 'Vol'] = v; K.settings[k] = v > 0; out.textContent = inp.value; K.MUSIC.refresh(); });
+      inp.addEventListener('change', () => { K.persist(); if (k === 'sfx') K.SFX.play('ok'); });
       box.appendChild(row);
     });
     const test = el('button', 'btn ghost', '▶ Test stemmen'); test.type = 'button'; test.dataset.tap = '1';

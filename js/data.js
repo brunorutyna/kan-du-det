@@ -121,6 +121,7 @@
       { n: 'A vulture lands, drops you in the sand from a modest height, and ticks something off a list.' },
       L('grib', 'Tørkeriget. Sidste stop.', 'The Dry Kingdom. Last stop.'),
       { th: 'I am a sponge. I have been wet for most of my life. Apparently that is the problem.' },
+      { n: 'Your file says: soaks up everything. Mostly dew, the glowing kind that makes the world change colour. Three years. Sent here by: the other sponges.' },
       L('kaktus', 'Velkommen til Lejren. Her er der ingen dug.', 'Welcome to the Camp. There is no dew here.'),
     ] },
     lesson({ who: 'kaktus', scene: 'lejr', title: 'Farver: en, et, nogle', say: { da: 'En rød hat. Et rødt tørklæde. Nogle røde sokker.', en: 'A red hat. A red scarf. Some red socks.' },
@@ -199,9 +200,9 @@
     ] },
 
     // ===== 4 · Trippet
-    { screen: 'card', ch: 4, title: 'Nat 17', sub: 'Trippet', music: 'tense' },
+    { screen: 'card', ch: 4, title: 'Nat 17', sub: 'Trippet', music: 'trip' },
     { screen: 'panel', scene: 'trip', cast: ['flue', 'firben'], lines: [
-      { n: 'The desert floor turns slowly into colour, like a carpet being pulled. Something hums in a key you do not know.' },
+      { n: 'Spores drift over the camp every night now, more each time. Tonight there are so many that the desert floor turns slowly into colour, like a carpet being pulled.' },
       L('flue', 'Bliv i farverne. Jeg passer på dig.', 'Stay in the colours. I will look after you.'),
     ] },
     { screen: 'choice', scene: 'trip', cast: ['flue'], who: 'svampen', prompt: 'Svar:', options: [
@@ -251,7 +252,9 @@
       { n: 'It does not answer. It stays.' },
       L('firben', 'Hvor længe har du været tør, Kaktus?', 'How long have you been dry, Cactus?'),
       L('kaktus', 'Tre hundrede år. Jeg er en kaktus. Det er ikke så svært.', 'Three hundred years. I am a cactus. It is not that hard.'),
-      { n: 'Behind the dune the mushroom\'s bottles burst in the heat, one after another. A cloud of spores rises over the camp. It will come down tonight.' },
+      { n: 'Behind the dune the mushroom\'s bottles burst in the heat, one after another. A cloud of spores rises over the camp. It will come down on the last night.' },
+      L('kaktus', 'Den sidste nat suger du det hele op. Og så vrider vi dig. Alle sammen.', 'On the last night you soak it all up. And then we wring you out. All of us.'),
+      { th: 'A plan. It is a terrible plan. It is the only one with me in it.' },
     ] },
 
     // ===== 6 · Opsugningen
@@ -318,6 +321,7 @@
     rød: 'red', rødt: 'red (et-form)', røde: 'red (-e form)', grøn: 'green', grønt: 'green (et-form)', grønne: 'green (-e form)', gul: 'yellow', gult: 'yellow (et-form)', gule: 'yellow (-e form)', blå: 'blue (no -e)', grå: 'grey (no -e)', hvid: 'white', hvidt: 'white (et-form)', hvide: 'white (-e form)', sort: 'black', sorte: 'black (-e form)', brun: 'brown', brune: 'brown (-e form)', orange: 'orange (never changes)', lilla: 'purple (never changes)', stribet: 'striped', stribede: 'striped (-e form)',
     pæn: 'nice, pretty', pænt: 'nice (et-form)', pæne: 'nice (-e form)', flot: 'fine, good-looking', flotte: 'fine (-e form)', smart: 'smart', smarte: 'smart (-e form)', lækker: 'lovely', lækkert: 'lovely (et-form)', lækre: 'lovely (-e form)', gammel: 'old', gamle: 'old (-e form)', lille: 'small', små: 'small (plural)', stor: 'big', stort: 'big (et-form)', store: 'big (-e form)', grimt: 'ugly (et-form)',
     'ørkenen': 'the desert', op: 'up (suge op = soak up)', inde: 'inside', natten: 'the night', altid: 'always (for altid = forever)', 'tørlagt': 'dried out / sober', blomstret: 'bloomed', tilbagefald: 'relapse', kommer: 'come(s)', hvidt_: '',
+    vrider: 'wring(s)', sammen: 'together (alle sammen = all of us)', hele: 'whole (det hele = all of it)',
     eneste: 'only (det eneste = the only thing)', 'ændrer': 'change(s) (ændrer sig = changes)', sig: 'say! / oneself', noget: 'something', om: 'about', gang: 'time (én gang = once)', hvad: 'what', siger: 'say(s)', sige: 'say', peger: 'point(s)', på: 'on', sin: 'his/her own',
     købt: 'bought', købe: 'buy', køber: 'buy(s)', lige: 'just', vil: 'want(s)', have: 'have', mere: 'more', fået: 'had, got', for: 'for / too', mange: 'many', øver: 'practise(s)', sig_: '',
     hvid_: '', indeni: 'inside', drypper: 'drip(s)', smider: 'throw(s)', ud: 'out', alt: 'everything / far (alt for = far too)', glad: 'happy', helt: 'completely', tør: 'dry', dråbe: 'drop', blød: 'soft', bliv: 'stay!', blive: 'become, stay', passer: 'look(s) after (passe på)', familien: 'the family', i: 'in',

@@ -82,7 +82,7 @@
     opts.forEach((o, i) => s.btn(c, o.da ? K.da(o.da) : K.esc(o.en), () => {
       if (o.set) Object.assign(K.st.flags, o.set);
       if (!o.da) K.st.english++;
-      if (o.da) K.VOICE.say(o.da, p.who, true);
+      if (o.da) K.VOICE.say(o.da, p.who, false);
       if (o.after) K.show('panel', { scene: p.scene, cast: p.cast, lines: o.after, _after: true });
       else s.finish();
     }, { answer: true, cls: 'opt' + (o.da ? '' : ' english'), data: { i: String(i) } }));

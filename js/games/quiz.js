@@ -30,6 +30,7 @@
       const drunk = v === 'puklen' && st.flags.drank1;
       const { game, body } = K.frame(root, p.title, p.sub);
       if (drunk || v === 'review') game.classList.add('trip-bg');
+      if (v === 'puklen') K.MUSIC.set(drunk ? 'trip' : 'calm');
       const rounds = (p.keep ? p.rounds.slice() : K.shuffle(p.rounds)).slice(0, p.n || p.rounds.length);
       let i = 0, score = 0, ts = 0;
       const pile = [];
@@ -47,7 +48,7 @@
           return it;
         } else if (v === 'gruppen' || v === 'replay') {
           sg.appendChild(K.ART.actor(r.who || (v === 'replay' ? 'flue' : 'kaktus')));
-          if (r.say) { const c = K.CAST[r.who]; const l = el('div', 'line', `<div class="who">${K.esc(c.name)}</div><div class="da">${K.da(r.say)}</div>`); l.style.borderColor = c.color; body.appendChild(l); K.VOICE.say(r.say, r.who, true); }
+          if (r.say) { const c = K.CAST[r.who]; const l = el('div', 'line', `<div class="who">${K.esc(c.name)}</div><div class="da">${K.da(r.say)}</div>`); l.style.borderColor = c.color; body.appendChild(l); K.VOICE.say(r.say, r.who, i > 0); }
           if (r.cue) body.appendChild(el('div', 'cue', r.cue === '❗' ? '❗ Be surprised' : '🤝 Agree'));
         } else if (v === 'review') {
           const sp = K.ART.actor('svampen'); sp.style.setProperty('--grow', String(1 + score * 0.12)); sp.classList.add('grows'); sg.appendChild(sp);

@@ -79,6 +79,7 @@
     K.goStep();
   };
   K.CONFIG.titleExtra = function (menu, s) {
+    K.MUSIC.set('title');
     const n = K.save.stats.reached || 0;
     if (n < 1) return;
     s.btn(menu, 'Kapitler', () => K.modal((box, close) => {
