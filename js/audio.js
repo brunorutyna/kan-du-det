@@ -9,7 +9,9 @@
   const vol = (k, d) => { const v = K.settings && K.settings[k + 'Vol']; return v == null ? d : v; };
   function ctx() {
     if (!ac) {
-      try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ac = null; }
+      const AC = window.AudioContext || window.webkitAudioContext;
+      try { ac = new AC({ latencyHint: 'balanced' }); } catch (e) { try { ac = new AC(); } catch (e2) { ac = null; } }
+      if (ac) ac.onstatechange = () => { if (ac.state === 'running') nextT = 0; };
       if (ac) build();
     }
     if (ac && ac.state === 'suspended') ac.resume();
@@ -30,7 +32,7 @@
     musicBus = ac.createGain(); musicBus.connect(master);
     sfxBus = ac.createGain(); sfxBus.connect(master);
     // reverb
-    const rev = ac.createConvolver(); rev.buffer = impulse(3.2, 2.6);
+    const rev = ac.createConvolver(); rev.buffer = impulse(1.9, 2.4);
     revIn = ac.createGain(); revIn.gain.value = 0.9; revIn.connect(rev); const revOut = ac.createGain(); revOut.gain.value = 0.55; rev.connect(revOut).connect(musicBus);
     // dotted-eighth delay with a darkened feedback loop
     delayIn = ac.createGain();
@@ -108,6 +110,9 @@
 
   // ---------- the instruments (all scheduled at time t)
   const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+  let live = 0; // sounding sources; decoration is skipped when the phone is busy
+  const track = (src) => { live++; src.onended = () => { live--; }; };
+  const busy = () => live > 26;
   function env(g, t, a, peak, d) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
   function pluck(t, m, v, bright) {
     const o1 = ac.createOscillator(), o2 = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain();
@@ -116,16 +121,16 @@
     f.type = 'lowpass'; f.Q.value = 3; f.frequency.setValueAtTime(bright || 3200, t); f.frequency.exponentialRampToValueAtTime(500, t + 0.35);
     o1.connect(f); o2.connect(g2).connect(f); f.connect(g); env(g, t, 0.004, 0.16 * v, 0.7);
     g.connect(inst); const s1 = ac.createGain(); s1.gain.value = 0.5; g.connect(s1).connect(delayIn); const s2 = ac.createGain(); s2.gain.value = 0.35; g.connect(s2).connect(revIn);
-    [o1, o2].forEach((o) => { o.start(t); o.stop(t + 0.8); });
+    [o1, o2].forEach((o) => { o.start(t); o.stop(t + 0.8); }); track(o1);
   }
   function pad(t, notes, dur, v) {
-    notes.forEach((m) => [-9, 9].forEach((det) => {
+    notes.forEach((m, k) => [k % 2 ? -7 : 7].forEach((det) => {
       const o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain();
       o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = det;
       f.type = 'lowpass'; f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(1300, t + dur * 0.5); f.frequency.linearRampToValueAtTime(600, t + dur);
-      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.022 * v, t + 1.2); g.gain.setValueAtTime(0.022 * v, t + dur - 0.2); g.gain.linearRampToValueAtTime(0.0001, t + dur + 1.4);
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.03 * v, t + 1.2); g.gain.setValueAtTime(0.03 * v, t + dur - 0.2); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.9);
       o.connect(f).connect(g); g.connect(inst); const s = ac.createGain(); s.gain.value = 0.8; g.connect(s).connect(revIn);
-      o.start(t); o.stop(t + dur + 1.5);
+      o.start(t); o.stop(t + dur + 1.0); track(o);
     }));
   }
   function bass(t, m, dur, v) {
@@ -142,11 +147,8 @@
     f.type = 'lowpass'; f.frequency.value = 2600;
     const g2 = ac.createGain(); g2.gain.value = 0.35; o.connect(f); o2.connect(g2).connect(f); f.connect(g);
     g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.07 * v, t + 0.09); g.gain.setValueAtTime(0.07 * v, t + dur * 0.8); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.25);
-    // breath
-    const n = ac.createBufferSource(); n.buffer = noiseBuf; const nf = ac.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.value = mtof(m) * 2; nf.Q.value = 2; const ng = ac.createGain(); env(ng, t, 0.05, 0.02 * v, dur * 0.6);
-    n.connect(nf).connect(ng).connect(inst);
     g.connect(inst); const s = ac.createGain(); s.gain.value = 0.6; g.connect(s).connect(revIn); const s2 = ac.createGain(); s2.gain.value = 0.3; g.connect(s2).connect(delayIn);
-    [o, o2, vib].forEach((x) => { x.start(t); x.stop(t + dur + 0.3); }); n.start(t, Math.random()); n.stop(t + dur);
+    [o, o2, vib].forEach((x) => { x.start(t); x.stop(t + dur + 0.3); }); track(o);
   }
   function kick(t, v) {
     const o = ac.createOscillator(), g = ac.createGain();
@@ -156,7 +158,7 @@
   function hit(t, v, freq, q, dur, rev) {
     const n = ac.createBufferSource(); n.buffer = noiseBuf; const f = ac.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = q; const g = ac.createGain();
     env(g, t, 0.001, v, dur); n.connect(f).connect(g).connect(musicBus); if (rev) { const s = ac.createGain(); s.gain.value = rev; g.connect(s).connect(revIn); }
-    n.start(t, Math.random()); n.stop(t + dur + 0.05);
+    n.start(t, Math.random()); n.stop(t + dur + 0.05); track(n);
   }
   const shaker = (t, v) => hit(t, 0.05 * v, 7500, 0.8, 0.05);
   const darbuka = (t, v, hi) => { hit(t, 0.22 * v, hi ? 900 : 380, hi ? 6 : 3, hi ? 0.08 : 0.16, 0.15); };
@@ -189,7 +191,7 @@
     if (s === 10 && M !== MOODS.tense) bass(t, chord[0] - 12 + (bar % 2 ? 7 : 0), sd * 4, 0.7);
     // arpeggio over the scale, nudged towards the chord
     const a = M.arp[s];
-    if (a >= 0 && (section || s % 2 === 0 || M === MOODS.trip)) {
+    if (a >= 0 && (section || s % 2 === 0 || M === MOODS.trip) && !(busy() && s % 2)) {
       const sc = M.scale, idx = (a + (bar % 4 === 3 ? 2 : 0)) % sc.length;
       pluck(t, sc[idx] + (bar % 8 >= 6 && s > 8 ? 12 : 0), s % 4 === 0 ? 1 : 0.65, M === MOODS.trip ? 4500 : 3000);
     }
@@ -204,7 +206,7 @@
       if (s === 0 || s === 8) kick(t, 1);
       if (s === 6 || s === 14) darbuka(t, 0.9, false);
       if (s === 3 || s === 11 || (section && (s === 7 || s === 15))) darbuka(t, 0.6, true);
-      if (section || s % 2 === 0) shaker(t, s % 4 === 2 ? 1 : 0.55);
+      if ((section || s % 2 === 0) && !busy()) shaker(t, s % 4 === 2 ? 1 : 0.55);
       if (bar % 8 === 7 && s >= 12) darbuka(t, 0.5 + (s - 12) * 0.12, true);
     } else if (d === 'heart') {
       if (s === 0 || s === 3) kick(t, s ? 0.6 : 0.9);
@@ -217,15 +219,16 @@
     }
   }
   function tick() {
-    if (!ac || ac.state !== 'running' || !cur) return;
-    if (nextT < ac.currentTime - 0.2) nextT = ac.currentTime + 0.05;
-    while (nextT < ac.currentTime + 0.25) {
+    if (!ac || !cur) return;
+    if (ac.state !== 'running') { if (Date.now() - lastTry > 2000) { lastTry = Date.now(); try { ac.resume(); } catch (e) { /* needs a tap */ } } return; }
+    if (nextT < ac.currentTime + 0.02) nextT = ac.currentTime + 0.08; // fell behind (busy screen, hidden tab): restart cleanly, never in the past
+    while (nextT < ac.currentTime + 0.4) {
       schedule(step, nextT);
       nextT += 60 / cur.bpm / 4; step++;
       if (step % 16 === 0 && pending !== undefined) { cur = pending ? MOODS[pending] : null; step = 0; pending = undefined; setMoodFx(); if (!cur) break; }
     }
   }
-  let pending;
+  let pending, lastTry = 0;
   function setMoodFx() {
     if (!ac) return;
     const t = ac.currentTime, trip = cur === MOODS.trip;
@@ -234,7 +237,12 @@
     if (cur) K.__delay.delayTime.setTargetAtTime((60 / cur.bpm) * 0.75, t, 0.2);
   }
   function start() {
-    if (!timer) timer = setInterval(tick, 60);
+    if (!timer) timer = setInterval(tick, 50);
+  }
+  // the browser may pause audio (another sound, a call, the screen off): any tap or coming back resumes it
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    document.addEventListener('pointerdown', () => { if (ac && ac.state !== 'running') { try { ac.resume(); } catch (e) { /* ignore */ } } }, true);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && ac) { try { ac.resume(); } catch (e) { /* ignore */ } nextT = 0; } });
   }
   K.MUSIC = {
     set(m) {
