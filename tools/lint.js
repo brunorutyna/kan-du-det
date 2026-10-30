@@ -1,49 +1,95 @@
-// node tools/lint.js — static checks. Exit 1 on errors.
+// node tools/lint.js: static checks on the game's data. Exit 1 on any error.
+// Add game-specific checks at the bottom (and to the mini-game's own lint()).
 const fs = require('fs'), path = require('path');
 const K = require('./load')();
 const ROOT = path.join(__dirname, '..');
 const err = [], warn = [];
-// 1. every Danish word has a gloss
-const texts = new Set();
-try { JSON.parse(fs.readFileSync(path.join(__dirname, 'lines.json'))).forEach((l) => texts.add(l.text)); } catch (e) { err.push('run tools/speech.js first'); }
-K.STORY.forEach((s) => { if (s.t === 'choice') (typeof s.options === 'function' ? [] : s.options).forEach((o) => o.da && texts.add(o.da)); });
-Object.values(K.G).forEach((g) => g.phrases && g.phrases().forEach(([d, a, n]) => K.allForms(d, a, n).forEach((f) => texts.add(f))));
-['min', 'def', 'indef'].forEach((d) => Object.keys(K.N).forEach((n) => ['groen', 'gammel', 'lille', 'prikket'].forEach((a) => texts.add(K.np(d, [a], n)))));
-['Min, mit eller mine?', 'En ting i dit hjem:', 'Vælg et adjektiv:', 'Bag tæppet:', 'Min, mit, mine', 'Med den rigtige endelse:', 'Holger svarer:', 'Mærket siger:', 'Det er rigtigt.', 'Mærket:', 'Hvem laver samme slags fejl? Tryk på en mand for at høre ham. Tryk igen for at vælge ham.', 'Der er kun én.', 'Der er hundredvis af dem.'].forEach((t) => texts.add(t));
-const missing = new Map();
-texts.forEach((t) => (t.match(/[A-Za-zÆØÅæøåÉé'-]+/g) || []).forEach((w) => { if (!K.glossOf(w)) missing.set(w.toLowerCase(), t); }));
-missing.forEach((t, w) => err.push(`no gloss: "${w}"  (in: ${t})`));
-// 2. story references
-K.STORY.forEach((s, i) => {
-  if (s.t === 'game' && !K.G[s.id]) err.push(`step ${i}: unknown game ${s.id}`);
-  const img = s.img || (s.panel && s.panel.img);
-  if (img && !fs.existsSync(path.join(ROOT, 'img', img + '.webp'))) warn.push(`step ${i}: missing img/${img}.webp`);
-  if (s.music && !K.audio.TRACKS.includes(s.music)) err.push(`step ${i}: unknown music ${s.music}`);
+const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
+
+// 1. flow: every step's screen exists; mini-games pass their own lint; collect Danish texts
+const texts = new Map(); // text -> where
+const add = (t, where) => { if (typeof t === 'string' && t.trim()) texts.set(t, where); };
+const lineTexts = (lines, where, st) => (lines || []).forEach((l) => {
+  const ls = [].concat(typeof l === 'function' ? l(st) : l).filter(Boolean);
+  ls.forEach((x) => { if (x.da) add(x.da, where); if (x.w && !(K.CAST || {})[x.w]) err.push(`${where}: unknown speaker "${x.w}"`); });
 });
-Object.values(K.ENDINGS).forEach((e) => { if (!fs.existsSync(path.join(ROOT, 'img', e.img + '.webp'))) warn.push('missing ending img ' + e.img); });
-['donor1', 'donor2', 'donor3', 'lilla', 'ellen_sat', 'holger', 'auction', 'gun', 'manden', 'impostor', 'seller', 'flat', 'crate', 'title'].forEach((k) => { if (!fs.existsSync(path.join(ROOT, 'img', k + '.webp'))) warn.push('missing img/' + k + '.webp'); });
-Object.values(K.N).forEach((n) => { if (n.art && !fs.existsSync(path.join(ROOT, 'img', 'o', n.art + '.webp'))) warn.push('missing object card ' + n.art); });
-// 3. Stirren igen: every Saturday reaction has ≥1 producing and ≥2 non-producing Ellen lines
-K.stirrenTable().forEach((r) => { if (r.yes < 1 || r.no < 2) err.push(`stirren table: ${r.item} "${r.said}" yes=${r.yes} no=${r.no}`); });
-// 4. phrase builder sanity
-Object.keys(K.N).forEach((n) => Object.keys(K.A).forEach((a) => ['indef', 'def', 'min'].forEach((d) => { const p = K.np(d, [a], n); if (/undefined|NaN/.test(p)) err.push('bad phrase ' + p); })));
-// known forms (a few must-be-right checks)
-const must = { 'et grønt tørklæde': K.np('indef', ['groen'], 'toerklaede'), 'det grønne tørklæde': K.np('def', ['groen'], 'toerklaede'), 'de blå bukser': K.np('def', ['blaa'], 'bukser'),
-  'et blåt slips': K.np('indef', ['blaa'], 'slips'), 'den lille seng': K.np('def', ['lille'], 'seng'), 'de små stole': K.np('def', ['lille'], 'stole'), 'et gammelt bord': K.np('indef', ['gammel'], 'bord'),
-  'den gamle kommode': K.np('def', ['gammel'], 'kommode'), 'et lækkert jakkesæt': K.np('indef', ['laekker'], 'jakkesaet'), 'de lækre puder': K.np('def', ['laekker'], 'puder'), 'mine prikkede puder': K.np('min', ['prikket'], 'puder'),
-  'et sort slips': K.np('indef', ['sort'], 'slips'), 'et flot skab': K.np('indef', ['flot'], 'skab'), 'nogle lilla sokker': K.np('indef', ['lilla'], 'sokker'), 'mit orange gardin': K.np('min', ['orange'], 'gardin') };
-Object.entries(must).forEach(([want, got]) => { if (want !== got) err.push(`grammar: want "${want}" got "${got}"`); });
-// wrong options must never equal the right answer
-Object.keys(K.N).forEach((n) => ['groen', 'flot', 'lille', 'blaa'].forEach((a) => ['indef', 'def'].forEach((d) => { const r = K.np(d, [a], n); K.wrongForms(d, a, n, 5).forEach((w) => { if (w === r) err.push('wrong option equals right ' + w); }); })));
-// 5. version stamp
-const v = fs.readFileSync(path.join(ROOT, 'version.txt'), 'utf8').trim();
-if (!/^\d{14}$/.test(v)) err.push('version.txt must be a 14-digit stamp');
-const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const sample = K.newRun();
+if (!K.CONFIG || !K.CONFIG.id) err.push('K.CONFIG.id missing (save key)');
+if (!Array.isArray(K.FLOW) || !K.FLOW.length) err.push('K.FLOW is empty');
+(K.FLOW || []).forEach((step, i) => {
+  const where = `FLOW[${i}] ${step.screen}`;
+  if (!K.SCREENS[step.screen]) { err.push(`${where}: unknown screen`); return; }
+  if (step.scene && !(K.SCENES || {})[step.scene]) err.push(`${where}: unknown scene "${step.scene}"`);
+  (step.cast || []).forEach((c) => { if (!(K.CAST || {})[c]) err.push(`${where}: unknown cast "${c}"`); });
+  lineTexts(step.lines, where, sample);
+  if (step.screen === 'choice') {
+    const opts = typeof step.options === 'function' ? step.options(sample) : step.options;
+    if (!opts || !opts.length) err.push(`${where}: no options`);
+    (opts || []).forEach((o) => { add(o.da, where); lineTexts(o.after, where, sample); });
+    if (!(opts || []).some((o) => o.en && !o.da)) warn.push(`${where}: no English option (English should always be possible, at a cost)`);
+  }
+  const g = K.GAMES[step.screen];
+  if (g) {
+    try { (g.lint ? g.lint(step) : []).forEach((e) => err.push(`${where}: ${e}`)); } catch (e) { err.push(`${where}: lint crashed: ${e.message}`); }
+    try { (g.texts ? g.texts(step) : []).forEach((t) => add(t, where)); } catch (e) { err.push(`${where}: texts crashed: ${e.message}`); }
+  }
+  if (step.music !== undefined && step.music !== null && typeof step.music !== 'string') err.push(`${where}: music must be a mood name or null`);
+});
+
+// 1b. TØRLAGT: lessons, branch lines with every flag combination, endings
+(K.FLOW || []).forEach((step, i) => {
+  if (step.screen === 'lesson') {
+    const where = `FLOW[${i}] lesson`;
+    if (!(K.CAST || {})[step.who]) err.push(`${where}: unknown teacher ${step.who}`);
+    add(step.say.da, where); step.ex.forEach((x) => add(x.replace(/[[\]]/g, ''), where));
+    add(step.try.q, where); add(step.try.right, where);
+    if (step.try.wrong.includes(step.try.right)) err.push(`${where}: try has the right answer among the wrong`);
+  }
+});
+const combos = [];
+[false, true].forEach((a) => [false, true].forEach((b) => [false, true].forEach((c) => [false, true].forEach((d) => combos.push({ drank1: a, stayed2: b, final: c, confessed: d })))));
+combos.forEach((f) => {
+  const st = Object.assign(K.newRun(), { flags: f });
+  (K.FLOW || []).forEach((step, i) => (step.lines || []).forEach((l) => { const ls = [].concat(typeof l === 'function' ? l(st) : l).flat(); ls.forEach((x) => { if (!x) return; if (x.da) add(x.da, `FLOW[${i}] (flags)`); if (x.w && !(K.CAST || {})[x.w]) err.push(`FLOW[${i}]: unknown speaker ${x.w}`); }); }));
+  if (K.epilogue) K.epilogue(st).forEach((x) => { if (x.da) add(x.da, 'epilogue'); });
+});
+Object.entries(K.CAST || {}).forEach(([id, c]) => { if (!c.e) err.push(`cast ${id}: no creature emoji (no humans allowed)`); });
+// blocklist of religious words (whole words only), and no countdown wording
+const RELIGION = ['gud', 'guder', 'djævel', 'djævelen', 'satan', 'lucifer', 'fristeren', 'fristelse', 'kirke', 'engel', 'engle', 'bøn', 'tilbede', 'himmel', 'helvede', 'synd', 'profet', 'jesus', 'faste', 'dæmon', 'tempel', 'præst', 'kors', 'frelse', 'god', 'devil', 'angel', 'heaven', 'hell', 'pray', 'prayer', 'church', 'temptation', 'tempter', 'forty', 'fyrre', 'sekunder', 'nedtælling', 'københavn', 'aarhus', 'århus', 'odense', 'aalborg', 'ærø', 'esbjerg', 'roskilde', 'danmark', 'denmark', 'copenhagen', 'menneske', 'mennesker', 'human', 'humans'];
+K.__files.forEach((f) => {
+  const txt = fs.readFileSync(path.join(ROOT, f), 'utf8').toLowerCase();
+  const words = new Set(txt.match(/[a-zæøå]+/g) || []);
+  RELIGION.forEach((r) => { if (words.has(r)) err.push(`${f}: blocked word "${r}" (no religion, no timer)`); });
+});
+
+// 2. every Danish word has a gloss
+const missing = new Map();
+texts.forEach((where, t) => (t.match(/[A-Za-zÆØÅæøåÉé'-]+/g) || []).forEach((w) => { if (!K.glossOf(w)) missing.set(w.toLowerCase(), `${where}: "${t}"`); }));
+missing.forEach((where, w) => err.push(`no gloss for "${w}" (${where})`));
+
+// 3. no "undefined" in generated text
+texts.forEach((where, t) => { if (/undefined|NaN|\[object/.test(t)) err.push(`${where}: bad text "${t}"`); });
+
+// 4. version stamp
+const v = read('version.txt').trim();
+const html = read('index.html');
+if (!/^\d{14}$/.test(v)) err.push('version.txt must be a 14-digit stamp (run tools/bump.sh)');
 if (!html.includes(`VERSION: '${v}'`)) err.push('index.html VERSION does not match version.txt (run tools/bump.sh)');
-// 6. no real people
-const block = fs.existsSync(path.join(__dirname, 'blocklist.txt')) ? fs.readFileSync(path.join(__dirname, 'blocklist.txt'), 'utf8').split('\n').map((s) => s.trim()).filter(Boolean) : [];
-const src = ['story.js', 'games1.js', 'games2.js'].map((f) => fs.readFileSync(path.join(ROOT, 'js', f), 'utf8')).join('\n');
-block.forEach((b) => { if (src.includes(b)) err.push('blocklisted name: ' + b); });
-warn.forEach((w) => console.log('warn:', w)); err.forEach((e) => console.log('ERROR:', e));
-console.log(`${err.length} errors, ${warn.length} warnings`);
+[...html.matchAll(/\?v=(\d+)/g)].forEach((m) => { if (m[1] !== v) err.push(`index.html has a stale ?v=${m[1]}`); });
+
+// 5. source checks: real people, double class attributes, \b near Danish letters, direct timers in games
+const src = K.__files.map((f) => [f, read(f)]);
+const block = fs.existsSync(path.join(__dirname, 'blocklist.txt')) ? read('tools/blocklist.txt').split('\n').map((s) => s.trim()).filter(Boolean) : [];
+src.forEach(([f, s]) => {
+  block.forEach((b) => { if (s.includes(b)) err.push(`${f}: blocklisted real name "${b}"`); });
+  if (/class="[^"]*"[^<>]*class="/.test(s)) err.push(`${f}: an element with two class attributes`);
+  if (/\\b/.test(s) && /[æøåÆØÅ]/.test(s) && !/core\.js$/.test(f)) warn.push(`${f}: uses \\b in a regex; JavaScript \\b does not treat æ/ø/å as letters. Test with æøå samples.`);
+  if (/games\//.test(f) && /\b(setTimeout|setInterval|requestAnimationFrame|addEventListener)\(/.test(s)) err.push(`${f}: use s.timer / s.every / s.loop / s.on (they die with the screen), not raw timers or listeners`);
+  if (/games\//.test(f) && /getElementById|querySelector\(['"]#/.test(s)) err.push(`${f}: look elements up inside your own root, never by global id`);
+  if (/games\//.test(f) && !/s\.bot\s*=/.test(s)) err.push(`${f}: mini-game must set s.bot for the playtest`);
+});
+
+warn.forEach((w) => console.log('warn:', w));
+err.forEach((e) => console.log('ERROR:', e));
+console.log(`lint: ${err.length} errors, ${warn.length} warnings, ${texts.size} Danish texts checked`);
 process.exit(err.length ? 1 : 0);

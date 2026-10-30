@@ -15,6 +15,7 @@
     if (mid) s.btn(menu, 'Fortsæt', go(false), { cls: 'main', data: { bot: 'continue' } });
     s.btn(menu, mid ? 'Begynd forfra' : 'Begynd', go(true), { cls: mid ? '' : 'main', data: { bot: 'new' } });
     s.btn(menu, 'Indstillinger', () => K.modal((b) => { b.appendChild(el('h2', '', 'Indstillinger')); K.settingsUI(b); }));
+    if (K.CONFIG.titleExtra) K.CONFIG.titleExtra(menu, s);
     if (K.CONFIG.back) s.btn(menu, K.esc(K.CONFIG.back.label), () => { location.href = K.CONFIG.back.href; }, { cls: 'ghost' });
     const st = K.save.stats;
     root.appendChild(el('div', 'foot', `Spillet ${st.done}× · Slutninger ${Object.keys(st.endings).length}/${K.CONFIG.endings || 1}`));

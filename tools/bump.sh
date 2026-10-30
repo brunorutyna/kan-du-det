@@ -1,5 +1,5 @@
 #!/bin/sh
-# Stamp a new version so phones load fresh files and open games show "Ny version".
+# Stamp a new version so phones load fresh files and open games show "Ny version ↻". Run before every push.
 cd "$(dirname "$0")/.."
 V=$(date -u +%Y%m%d%H%M%S)
 echo "$V" > version.txt
