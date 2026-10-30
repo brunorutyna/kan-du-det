@@ -1,0 +1,12 @@
+{
+  "name": "dansk-kit",
+  "private": true,
+  "description": "Starter kit for Bruno's Danish-learning browser games",
+  "scripts": {
+    "lint": "node tools/lint.js",
+    "playtest": "node tools/playtest.js --runs 2",
+    "shots": "node tools/playtest.js --runs 1 --real --shots shots",
+    "test": "node tools/lint.js && node tools/playtest.js --runs 2",
+    "bump": "sh tools/bump.sh"
+  }
+}

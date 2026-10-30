@@ -16,6 +16,7 @@
     btn('Mini-spil', games);
     btn('Slutninger', endings);
     btn('Indstillinger', settings);
+    btn('Lygten · nyt spil ▸', () => { location.href = 'lygten/'; }, 'other-game');
     const st = K.save.stats;
     s.appendChild(el('div', 'foot', `Gennemspillet ${st.done}× · Slutninger ${Object.keys(st.endings).length}/4` + (st.best != null ? ` · Færrest sokker: ${st.best}` : '')));
     const tap = el('button', 'sound-hint', '♪ Tryk for lyd'); tap.type = 'button'; tap.onclick = () => { K.audio.ac(); K.audio.playMusic('title'); tap.remove(); }; s.appendChild(tap);
