@@ -20,7 +20,7 @@
         if (r.lieCol && !K.COLORS[r.lieCol]) e.push(`round ${i}: unknown lieCol ${r.lieCol}`);
         if (r.who && !K.CAST[r.who]) e.push(`round ${i}: unknown speaker ${r.who}`);
         if (p.variant === 'puklen' && r.lieCol && !(r.colWrong && r.says)) e.push(`round ${i}: puklen lie colour needs colWrong and says`);
-        if (p.variant === 'gruppen' && !r.cue) e.push(`round ${i}: gruppen needs a cue`);
+        if (p.variant === 'gruppen' && !r.cue && !r.prompt) e.push(`round ${i}: gruppen needs a cue or a prompt`);
         if (p.fixed && [r.right].concat(r.wrong).some((o) => !p.fixed.includes(o))) e.push(`round ${i}: option not in the fixed list`);
         (r.cast || []).forEach((c) => { if (!K.CAST[c]) e.push(`round ${i}: unknown cast ${c}`); });
       });
@@ -28,6 +28,7 @@
     },
     screen(root, p, s) {
       const st = K.st || { flags: {} };
+      if (p.dyn) p = Object.assign({}, p, { rounds: p.dyn(K.st, p.rounds) }); // rounds built from the run (e.g. your own old mistakes)
       const v = p.variant;
       const drunk = v === 'puklen' && st.flags.drank1;
       const { game, body } = K.frame(root, p.title, p.sub);
@@ -59,6 +60,7 @@
           (r.cast || p.cast || []).forEach((c) => sg.appendChild(K.ART.actor(c)));
           if (r.e) sg.appendChild(el('div', 'bigthing', r.e));
           if (r.say) { const c = K.CAST[r.who]; const l = el('div', 'line', `<div class="who">${K.esc(c.name)}</div><div class="da">${K.da(r.say)}</div>`); l.style.borderColor = c.color; body.appendChild(l); K.VOICE.say(r.say, r.who, i > 0); }
+          if (r.cue) body.appendChild(el('div', 'cue', r.cue === '❗' ? '❗ Be surprised' : '🤝 Agree'));
           if (p.meter) body.appendChild(el('div', 'meter', p.meter.repeat(score) + '<span class="dim">' + p.meter.repeat(Math.max(0, rounds.length - score)) + '</span>'));
           if (p.pileWrong) { const pw = el('div', 'pile wrongpile', wrongPile ? p.pileWrong.repeat(wrongPile) : ''); sg.firstChild && sg.firstChild.appendChild(pw); }
           if (p.pileRight) body.appendChild(el('div', 'pile', rightPile.join('') || '<span class="small">…</span>'));
@@ -90,6 +92,7 @@
       async function answer(r, ok, b, flying) {
         b.classList.add(ok ? 'is-ok' : 'is-no');
         K.tally(p.id, ok);
+        if (r.flag && K.st && !K.st.replay) { K.st.flags[r.flag] = ok; K.persist(); } // a story round: its answer changes a later line
         if (ok) {
           score++; K.ART.pop(b); const q = b.getBoundingClientRect(); K.ART.burst(q.left + q.width / 2, q.top + q.height / 2); K.VOICE.say(r.right, null, true);
           if (v === 'puklen') { pile.push(r.e); if (flying) flying.classList.add('fly'); }

@@ -92,13 +92,13 @@
     const ending = K.CONFIG.ending ? K.CONFIG.ending(st) : 'slut';
     const S2 = K.save.stats;
     const open = K.CONFIG.openEnding && K.CONFIG.openEnding(st);
-    if (K.save.run) { S2.done++; if (!open) S2.endings[ending] = (S2.endings[ending] || 0) + 1; else S2.part2done = (S2.part2done || 0) + 1; K.save.run = null; K.persist(); }
+    if (K.save.run) { S2.done++; if (!open) S2.endings[ending] = (S2.endings[ending] || 0) + 1; else { const k = 'part' + (st.part || 2) + 'done'; S2[k] = (S2[k] || 0) + 1; } K.save.run = null; K.persist(); }
     K.SFX.play('win'); K.ended = true;
     root.appendChild(K.ART.scene('title'));
     const ranks = Object.entries(st.ranks).map(([id, r]) => `<div class="rk-row"><span>${K.esc(id)}</span><b class="rk rk-${r}">${r}</b></div>`).join('');
-    root.appendChild(el('div', 'end-box', `<div class="big">${open ? 'Fortsættes …' : 'SLUT'}</div><div class="sub">${K.esc(open ? '' : ending)}</div>${ranks}<div class="small">Point: ${st.score}</div>`));
+    root.appendChild(el('div', 'end-box', `<div class="big">${open ? 'Fortsættes …' : 'SLUT'}</div><div class="sub">${K.esc(open ? (K.CONFIG.endNote ? K.CONFIG.endNote(st) : '') : ending)}</div>${ranks}<div class="small">Point: ${st.score}</div>`));
     const menu = el('div', 'menu'); root.appendChild(menu);
-    s.btn(menu, 'Spil igen', () => (open && K.start2 ? K.start2() : K.start(true)), { cls: 'main' });
+    s.btn(menu, 'Spil igen', () => (K.CONFIG.again ? K.CONFIG.again(st) : K.start(true)), { cls: 'main' });
     s.btn(menu, 'Til start', () => K.show('title'));
   };
 })(window.K = window.K || {});

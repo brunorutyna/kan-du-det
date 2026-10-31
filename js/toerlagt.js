@@ -52,7 +52,8 @@
   // ---------- flow: chapter cards remember how far you got; replay one chapter from the title
   K.SCREENS.act = function (root, p, s) {
     const st = K.st;
-    if (p.do === 'ranks' && !st.replay && st.part !== 2) K.save.stats.lastEnding = K.endingOf(st);
+    if (p.do === 'ranks' && !st.replay && !(st.part >= 2)) K.save.stats.lastEnding = K.endingOf(st); // part 1 only
+    if (p.do === 'ranks' && !st.replay && st.part === 3) K.save.stats.part3 = Object.assign({ colony: K.colonyOf(st) }, st.flags); // for Del 4
     if (p.do === 'ranks' && !st.replay) {
       st.ranks = {}; st.score = 0;
       Object.entries(st.tally).forEach(([g, t]) => { st.ranks[g] = K.rank(t.ok, t.n); st.score += t.ok; const b = K.save.stats.ranks[g]; if (!b || 'SABC'.indexOf(st.ranks[g]) < 'SABC'.indexOf(b)) K.save.stats.ranks[g] = st.ranks[g]; });
@@ -88,7 +89,17 @@
     K.save.run = run; K.st = run; K.persist();
     K.goStep();
   };
-  K.CONFIG.openEnding = (st) => st.part === 2;
+  // ---------- Part 3: starts after part 2; your old mistakes are snapshotted at the start (part 3's own never count)
+  K.part3Start = () => K.FLOW.findIndex((x) => x.part3);
+  K.start3 = function () {
+    K.save.stats.runs++;
+    const run = Object.assign(K.newRun(), { step: K.part3Start(), part: 3 });
+    run.hist = K.historyKeys(K.save.stats.missed);
+    K.save.run = run; K.st = run; K.persist();
+    K.goStep();
+  };
+  K.CONFIG.openEnding = (st) => st.part === 2 || st.part === 3;
+  K.CONFIG.again = (st) => (st.part === 3 ? K.start3() : st.part === 2 ? K.start2() : K.start(true));
   // the chapter a step belongs to (the last chapter card at or before it)
   K.chapterOf = (step) => { let ch = 1; for (let i = 0; i <= step && i < K.FLOW.length; i++) if (K.FLOW[i].ch) ch = K.FLOW[i].ch; return ch; };
   // starting something new while a story is in progress asks first (it used to wipe the place silently)
@@ -113,14 +124,20 @@
     if (mid) {
       const ch = K.chapterOf(run.step), c = K.CHAPTERS[ch - 1] || {};
       const f = menu.querySelector('[data-bot="continue"]');
-      if (f) f.innerHTML = `Fortsæt<span class="resume">${run.part === 2 ? 'Del 2 · ' : ''}Kapitel ${ch}: ${K.esc(c.title || '')}</span>`;
+      if (f) f.innerHTML = `Fortsæt<span class="resume">${run.part >= 2 ? 'Del ' + run.part + ' · ' : ''}Kapitel ${ch}: ${K.esc(c.title || '')}</span>`;
       const fresh = menu.querySelector('[data-bot="new"]');
       if (fresh) { const nb = fresh.cloneNode(true); fresh.replaceWith(nb); nb.onclick = () => K.confirmNew(() => { K.MUSIC.unlock(); K.start(true); }); }
     }
     // Del 2 only when you are not already in it; never a second orange button next to Fortsæt
+    const has3 = (S.part2done || 0) >= 1 || (S.reached || 0) >= 15;
     if (((S.done || 0) >= 1 || (S.reached || 0) >= 7) && !(run && run.part === 2)) {
-      const b = s.btn(menu, 'Del 2: Tuen ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start2(); }), { cls: (mid ? '' : 'main ') + 'part2', data: { bot: 'part2' } });
+      const b = s.btn(menu, 'Del 2: Tuen ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start2(); }), { cls: (mid || has3 ? 'ghost ' : 'main ') + 'part2', data: { bot: 'part2' } });
       if (/[?&]part2/.test(location.search)) s.bot = () => b;
+    }
+    // Del 3 only when you are not already in it; never a second orange button next to Fortsæt
+    if (has3 && !(run && run.part === 3)) {
+      const b = s.btn(menu, 'Del 3: Kaffehavet ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start3(); }), { cls: (mid ? '' : 'main ') + 'part3', data: { bot: 'part3' } });
+      if (/[?&]part3/.test(location.search)) s.bot = () => b;
     }
     const n = S.reached || 0;
     if (n < 1) return;
@@ -129,10 +146,12 @@
       box.appendChild(el('div', 'small', 'Spil en lektion og dens spil igen for en bedre rang. Historien ændres ikke.<br><span class="en">Replay a lesson for a better rank. Your story is not changed.</span>'));
       const here = mid ? K.chapterOf(run.step) : 0;
       const p2 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part2); });
+      const p3 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part3); });
       K.CHAPTERS.forEach((c, i) => {
         const ch = i + 1;
         if (i === 0) box.appendChild(el('div', 'chap-part', 'Del 1'));
         if (i === p2) box.appendChild(el('div', 'chap-part', 'Del 2'));
+        if (i === p3) box.appendChild(el('div', 'chap-part', 'Del 3'));
         const locked = ch > n;
         const b = el('button', 'btn chap' + (locked ? ' locked' : '') + (ch === here ? ' here' : ''),
           `<span class="n">${ch}</span><span class="t"><b>${K.esc(c.title)}</b><span>${locked ? 'Låst' : K.esc(c.topic)}${ch === here ? ' · du er her' : ''}</span></span>`);

@@ -9,7 +9,7 @@ const http = require('http'), fs = require('fs'), path = require('path');
 const ROOT = path.join(__dirname, '..');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
-const PART2 = !!opt('--part2', false), RUNS = +opt('--runs', 2), REAL = !!opt('--real', false), SHOTS = opt('--shots', null), MODE = opt('--mode', null);
+const PART2 = !!opt('--part2', false), PART3 = !!opt('--part3', false), RUNS = +opt('--runs', 2), REAL = !!opt('--real', false), SHOTS = opt('--shots', null), MODE = opt('--mode', null);
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml', '.mp3': 'audio/mpeg', '.txt': 'text/plain', '.json': 'application/json' };
 const serve = () => new Promise((res) => {
   const srv = http.createServer((req, rsp) => {
@@ -49,8 +49,12 @@ const serve = () => new Promise((res) => {
     page.on('pageerror', (e) => problems.push('page error: ' + e));
     page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) problems.push('console: ' + m.text().slice(0, 300)); });
     page.on('response', (r) => { if (r.status() >= 400 && !/version\.txt/.test(r.url())) problems.push('missing file: ' + r.url().replace(/^.*?\/\/[^/]+/, '')); });
-    await page.goto(`http://localhost:${port}/?debug${REAL ? '' : '&fast'}${PART2 ? '&part2' : ''}`);
-    await page.evaluate((p2) => { try { localStorage.clear(); if (p2) localStorage.setItem('dk.toerlagt', JSON.stringify({ v: 1, stats: { runs: 1, done: 1, reached: 6, ranks: {}, endings: { 'Tørlagt': 1 }, missed: {}, lastEnding: 'Tørlagt' }, run: null })); } catch (e) { /* */ } }, PART2);
+    await page.goto(`http://localhost:${port}/?debug${REAL ? '' : '&fast'}${PART2 ? '&part2' : ''}${PART3 ? '&part3' : ''}`);
+    await page.evaluate(([p2, p3]) => { try { localStorage.clear();
+      if (p2) localStorage.setItem('dk.toerlagt', JSON.stringify({ v: 1, stats: { runs: 1, done: 1, reached: 6, ranks: {}, endings: { 'Tørlagt': 1 }, missed: {}, lastEnding: 'Tørlagt' }, run: null }));
+      // part 3: part 2 finished once, and a few old mistakes on record (one of them not in the history index)
+      if (p3) localStorage.setItem('dk.toerlagt', JSON.stringify({ v: 1, stats: { runs: 2, done: 2, reached: 14, part2done: 1, ranks: {}, endings: { 'Tørlagt': 1 }, missed: { '+e': 3, 'Du spiste fire kager.': 2, 'Kan du det?!': 1, 'Sikke en flot kasket!': 4 }, lastEnding: 'Tørlagt' }, run: null }));
+    } catch (e) { /* */ } }, [PART2, PART3]);
     await page.reload();
     const t0 = Date.now(); let ticks = 0, idle = 0, lastSig = '', same = 0, lastScreen = '', screens = new Set(), done = false;
     while (Date.now() - t0 < 10 * 60 * 1000) {
@@ -67,7 +71,9 @@ const serve = () => new Promise((res) => {
           const areas = [box && box.getBoundingClientRect(), { left: 10, top: 70, right: innerWidth - 10, bottom: innerHeight - 20 }].filter(Boolean);
           for (const q of areas) for (let k = 0; k < 40; k++) {
             const x = q.left + 4 + Math.random() * Math.max(1, q.right - q.left - 8), y = q.top + 4 + Math.random() * Math.max(1, q.bottom - q.top - 8);
-            if (free(document.elementFromPoint(x, y))) return { x, y, id: K.cur.id };
+            // phones snap a near-miss tap onto the nearest button (touch adjustment): stay a finger's width away from any
+            const near = [[0, 0], [28, 0], [-28, 0], [0, 28], [0, -28], [20, 20], [-20, -20], [20, -20], [-20, 20]].every(([dx, dy]) => free(document.elementFromPoint(x + dx, y + dy)));
+            if (near) return { x, y, id: K.cur.id };
           }
           return null;
         }, t0);
