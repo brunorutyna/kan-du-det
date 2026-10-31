@@ -180,7 +180,7 @@
     if (w.cls !== 'cap') row.appendChild(el('div', 'who', l.name || w.name));
     const t = el('div', 'da', daHTML(l.da)); row.appendChild(t);
     const tools = el('div', 'tools');
-    const hear = el('button', 'mini', '▶'); hear.type = 'button'; hear.title = 'Hør'; hear.onclick = (e) => { e.stopPropagation(); K.audio.say(l.w, l.da); };
+    const hear = el('button', 'mini', '▶'); hear.type = 'button'; hear.title = 'Hør'; hear.onclick = (e) => { e.stopPropagation(); K.audio.say(l.w, l.da, 'replay'); };
     tools.appendChild(hear);
     if (l.en) {
       const tr = el('button', 'mini', 'EN'); tr.type = 'button'; tr.title = 'Oversæt (koster en sok)';

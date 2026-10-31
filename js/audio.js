@@ -84,10 +84,12 @@
   let queue = Promise.resolve(), gen = 0;
   K.VOICE = {
     available: () => !!(daVoice || findVoice()),
-    // say(text, who, cut): cut=true stops the previous line (an answer in a mini-game); otherwise lines queue.
-    say(text, who, cut) {
+    // say(text, who, mode). A line being spoken is NEVER cut mid-word, except when the player taps ▶ (mode 'replay').
+    // mode truthy (a new round, an answer): lines not yet started are dropped, the new one follows the current line.
+    // mode falsy: the line queues behind everything (story panels).
+    say(text, who, mode) {
       const est = Math.min(9000, 700 + String(text).length * 75);
-      const my = gen;
+      let my = 0;
       const speak = () => new Promise((res) => {
         if (my !== gen) return res(); // dropped by a screen change before it started
         const v = K.settings && K.settings.voice === false ? 0 : vol('voice', 1);
@@ -98,14 +100,17 @@
           u.rate = 0.95; u.onend = res; u.onerror = res; synth.speak(u);
         } catch (e) { res(); }
       });
-      if (cut) { K.VOICE.stop(); queue = Promise.resolve(); }
+      if (mode === 'replay') { K.VOICE.stop(); queue = Promise.resolve(); }
+      else if (mode) { gen++; } // drop what has not started; the current line finishes
+      my = gen;
       const p = queue.then(() => K.timeout(speak(), est));
       queue = p;
       return K.timeout(p, est * 2);
     },
     // a screen change: lines that have not started are dropped; the line being spoken finishes (never cut mid-line)
     settle() { gen++; },
-    stop() { try { if (synth) synth.cancel(); } catch (e) { /* ignore */ } queue = Promise.resolve(); },
+    // hard stop: only for the player's own ▶ replay and the settings test (lint enforces this)
+    stop() { try { if (synth) { window.__voiceReplay = Date.now(); synth.cancel(); } } catch (e) { /* ignore */ } queue = Promise.resolve(); },
   };
 
   // ---------- the instruments (all scheduled at time t)

@@ -92,6 +92,9 @@ src.forEach(([f, s]) => {
   if (/\\b/.test(s) && /[æøåÆØÅ]/.test(s) && !/core\.js$/.test(f)) warn.push(`${f}: uses \\b in a regex; JavaScript \\b does not treat æ/ø/å as letters. Test with æøå samples.`);
   if (/games\//.test(f) && /\b(setTimeout|setInterval|requestAnimationFrame|addEventListener)\(/.test(s)) err.push(`${f}: use s.timer / s.every / s.loop / s.on (they die with the screen), not raw timers or listeners`);
   if (/games\//.test(f) && /getElementById|querySelector\(['"]#/.test(s)) err.push(`${f}: look elements up inside your own root, never by global id`);
+  // voice: nothing may cut a line mid-word except the player's own ▶ (a recurring bug in every game)
+  if (!/audio\.js$/.test(f) && /VOICE\.stop\(|speechSynthesis\.cancel|synth\.cancel/.test(s)) err.push(`${f}: never stop the voice directly; lines finish, only ▶ replay may cut (VOICE.say(text, who, 'replay'))`);
+  (s.match(/VOICE\.say\([^;]*'replay'\)/g) || []).forEach((m) => { const at = s.indexOf(m); if (!/'▶'|test\.onclick/.test(s.slice(Math.max(0, at - 160), at))) err.push(`${f}: 'replay' (hard cut) is only for a ▶ button the player taps: ${m.slice(0, 60)}`); });
   if (/games\//.test(f) && !/s\.bot\s*=/.test(s)) err.push(`${f}: mini-game must set s.bot for the playtest`);
 });
 

@@ -68,7 +68,7 @@
     row.appendChild(el('div', 'who', K.esc(c.name)));
     row.appendChild(el('div', 'da', K.da(l.da)));
     const tools = el('div', 'tools'); row.appendChild(tools);
-    s.btn(tools, '▶', (e) => { e.stopPropagation(); K.VOICE.say(l.da, l.w, true); }, { cls: 'mini', silent: true });
+    s.btn(tools, '▶', (e) => { e.stopPropagation(); K.VOICE.say(l.da, l.w, 'replay'); }, { cls: 'mini', silent: true });
     if (l.en) s.btn(tools, 'EN', (e, b) => { e.stopPropagation(); b.remove(); row.appendChild(el('div', 'en', K.esc(l.en))); if (K.st) K.st.english++; }, { cls: 'mini' });
     return row;
   }

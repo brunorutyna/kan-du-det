@@ -122,7 +122,7 @@
     const say = el('div', 'line'); say.style.borderColor = c.color;
     say.innerHTML = `<div class="who">${K.esc(c.name)}</div><div class="da">${K.da(p.say.da)}</div>`;
     const tools = el('div', 'tools'); say.appendChild(tools);
-    s.btn(tools, '▶', () => K.VOICE.say(p.say.da, p.who, true), { cls: 'mini', silent: true });
+    s.btn(tools, '▶', () => K.VOICE.say(p.say.da, p.who, 'replay'), { cls: 'mini', silent: true });
     if (p.say.en) s.btn(tools, 'EN', (e, b) => { b.remove(); say.appendChild(el('div', 'en', K.esc(p.say.en))); }, { cls: 'mini' });
     head.appendChild(say);
     K.VOICE.say(p.say.da, p.who, false);

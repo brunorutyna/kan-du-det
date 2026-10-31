@@ -139,7 +139,7 @@
       box.appendChild(row);
     });
     const test = el('button', 'btn ghost', '▶ Test stemmen'); test.type = 'button'; test.dataset.tap = '1';
-    test.onclick = () => K.VOICE.say('Hej! Kan du høre mig?', null, true);
+    test.onclick = () => K.VOICE.say('Hej! Kan du høre mig?', null, 'replay');
     box.appendChild(test);
     box.appendChild(el('div', 'small', K.VOICE.available() ? 'Dansk stemme fundet.' : 'Ingen dansk stemme på denne telefon. Teksten er altid på skærmen.'));
   };

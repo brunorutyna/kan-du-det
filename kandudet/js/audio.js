@@ -28,13 +28,15 @@
   let cur = null, curDone = null;
   function stopVoice() { if (cur) { try { cur.pause(); } catch (e) {} cur = null; } if (curDone) { const d = curDone; curDone = null; d(); } }
   // Returns a promise that resolves when the clip ends (or at once if voice is off / missing).
-  // Story panels queue their lines so none is cut; in mini-games a new line replaces the old one at once.
-  let chain = Promise.resolve();
+  // A line being spoken is never cut mid-word. Story panels queue their lines; in mini-games a new line drops
+  // the lines that have not started yet and follows the current one. Only the player's ▶ (mode 'replay') cuts.
+  let chain = Promise.resolve(), gen = 0;
   function say(who, text, queue) {
     const id = clipId(who, text);
     if (!S().voice || !K.VOICES || !K.VOICES[id]) return Promise.resolve(false);
-    if (!queue) { stopVoice(); chain = Promise.resolve(); }
-    const p = chain.then(() => new Promise((res) => {
+    if (queue === 'replay') { stopVoice(); chain = Promise.resolve(); } else if (!queue) gen++;
+    const my = gen;
+    const p = chain.then(() => my !== gen ? true : new Promise((res) => {
       const a = new Audio('audio/v/' + id + '.mp3');
       a.volume = 1; cur = a; curDone = () => res(true);
       let fin = false;

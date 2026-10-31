@@ -27,6 +27,25 @@ const serve = () => new Promise((res) => {
     const mode = MODE || (run % 2 ? 'right' : 'wrong');
     const page = await browser.newPage({ viewport: { width: 393, height: 851 }, hasTouch: true });
     const problems = [], small = new Set();
+    // a fake Danish voice that speaks for a realistic time and reports any line cut mid-word
+    await page.addInitScript(() => {
+      const v = { lang: 'da-DK', name: 'fake-da', default: true };
+      let cur = null; const q = []; window.__voiceCuts = []; window.__voiceLines = 0;
+      const next = () => { cur = q.shift() || null; if (!cur) return; window.__voiceLines++; cur.t0 = Date.now(); cur.h = setTimeout(() => { const u = cur; cur = null; if (u.onend) u.onend(); next(); }, 300 + u0len(cur) * 55); };
+      const u0len = (u) => String(u.text).length;
+      window.SpeechSynthesisUtterance = function (text) { this.text = text; };
+      const fake = {
+        getVoices: () => [v], speaking: false,
+        speak(u) { q.push(u); if (!cur) next(); },
+        cancel() {
+          const replay = window.__voiceReplay && Date.now() - window.__voiceReplay < 50;
+          if (cur && !replay && Date.now() - cur.t0 > 30) window.__voiceCuts.push(String(cur.text).slice(0, 50));
+          if (cur) clearTimeout(cur.h); cur = null; q.length = 0;
+        },
+        onvoiceschanged: null,
+      };
+      Object.defineProperty(window, 'speechSynthesis', { value: fake, configurable: true });
+    });
     page.on('pageerror', (e) => problems.push('page error: ' + e));
     page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) problems.push('console: ' + m.text().slice(0, 300)); });
     page.on('response', (r) => { if (r.status() >= 400 && !/version\.txt/.test(r.url())) problems.push('missing file: ' + r.url().replace(/^.*?\/\/[^/]+/, '')); });
@@ -65,6 +84,9 @@ const serve = () => new Promise((res) => {
       if (idle > (REAL ? 40 : 200) || same > (REAL ? 80 : 400)) { problems.push(`stuck on "${r.screen}": ${r.text.slice(-160).replace(/\s+/g, ' ')}`); break; }
     }
     if (!done && !problems.length) problems.push('did not reach the end in 10 minutes');
+    const vc = await page.evaluate(() => ({ cuts: window.__voiceCuts || [], lines: window.__voiceLines || 0 }));
+    vc.cuts.slice(0, 5).forEach((t) => problems.push('voice cut mid-line: "' + t + '"'));
+    if (!vc.lines) problems.push('the voice never spoke (fake voice not picked up)');
     small.forEach((t) => problems.push('button under 44 px: ' + t));
     const secs = Math.round((Date.now() - t0) / 1000);
     console.log(`run ${run} (${mode}): ${problems.length ? 'FAIL' : 'ok'} · ${ticks} ticks · ${secs}s · screens: ${[...screens].join(', ')}`);
