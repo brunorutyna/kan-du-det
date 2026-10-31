@@ -55,7 +55,7 @@ combos.forEach((f) => {
 });
 Object.entries(K.CAST || {}).forEach(([id, c]) => { if (!c.e) err.push(`cast ${id}: no creature emoji (no humans allowed)`); });
 // blocklist of religious words (whole words only), and no countdown wording
-const RELIGION = ['gud', 'guder', 'djævel', 'djævelen', 'satan', 'lucifer', 'fristeren', 'fristelse', 'kirke', 'engel', 'engle', 'bøn', 'tilbede', 'himmel', 'helvede', 'synd', 'profet', 'jesus', 'faste', 'dæmon', 'tempel', 'præst', 'kors', 'frelse', 'god', 'devil', 'angel', 'heaven', 'hell', 'pray', 'prayer', 'church', 'temptation', 'tempter', 'forty', 'fyrre', 'sekunder', 'nedtælling', 'københavn', 'aarhus', 'århus', 'odense', 'aalborg', 'ærø', 'esbjerg', 'roskilde', 'danmark', 'denmark', 'copenhagen', 'menneske', 'mennesker', 'human', 'humans'];
+const RELIGION = ['gud', 'guder', 'djævel', 'djævelen', 'satan', 'lucifer', 'fristeren', 'fristelse', 'kirke', 'engel', 'engle', 'bøn', 'tilbede', 'himmel', 'helvede', 'synd', 'profet', 'jesus', 'faste', 'dæmon', 'tempel', 'præst', 'kors', 'frelse', 'jul', 'julen', 'påske', 'påsken', 'devil', 'angel', 'heaven', 'hell', 'pray', 'prayer', 'church', 'temptation', 'tempter', 'forty', 'fyrre', 'sekunder', 'nedtælling', 'københavn', 'aarhus', 'århus', 'odense', 'aalborg', 'ærø', 'esbjerg', 'roskilde', 'danmark', 'denmark', 'copenhagen', 'menneske', 'mennesker', 'human', 'humans'];
 K.__files.forEach((f) => {
   const txt = fs.readFileSync(path.join(ROOT, f), 'utf8').toLowerCase();
   const words = new Set(txt.match(/[a-zæøå]+/g) || []);

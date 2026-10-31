@@ -38,9 +38,9 @@
         if (i >= rounds.length) return done();
         const r = rounds[i];
         const sg = el('div', 'qstage'); body.appendChild(sg);
-        const a = K.ART.actor('skorpion'); sg.appendChild(a); a.appendChild(tail());
-        sg.appendChild(K.item(r.e, r.col, r.pat, true));
-        body.appendChild(el('div', 'prompt', K.da('Sig noget pænt!') + ' <span class="small">(Build the compliment.)</span>'));
+        const a = K.ART.actor(p.actor || 'skorpion'); sg.appendChild(a); a.appendChild(tail());
+        if (r.e) sg.appendChild(r.col ? K.item(r.e, r.col, r.pat, true) : el('div', 'bigthing', r.e));
+        body.appendChild(el('div', 'prompt', K.da(p.ask || 'Sig noget pænt!') + ` <span class="small">(${K.esc(r.en || p.askEn || 'Build the compliment.')})</span>`));
         const built = el('div', 'built'); body.appendChild(built);
         const pool = el('div', 'pool'); body.appendChild(pool);
         const bar = el('div', 'row'); body.appendChild(bar);
@@ -48,18 +48,18 @@
         const draw = () => {
           built.innerHTML = picked.length ? '' : '<span class="ph">…</span>';
           picked.forEach((t, k) => s.btn(built, K.esc(k === 0 ? t[0].toUpperCase() + t.slice(1) : t), () => { picked.splice(k, 1); pool.querySelector(`[data-k="${t.__k}"]`).hidden = false; draw(); }, { cls: 'tile in' }));
-          if (picked.length) built.appendChild(el('span', 'bang', '!'));
+          if (picked.length) built.appendChild(el('span', 'bang', r.end || p.end || '!'));
           doneB.disabled = !picked.length;
         };
         K.shuffle(tilesFor(r)).forEach((t, k) => {
           const b = s.btn(pool, K.da(t), () => { const w = new String(t); w.__k = k; picked.push(w); b.hidden = true; draw(); }, { cls: 'tile', data: { k: String(k), w: t } });
         });
-        const doneB = s.btn(bar, 'Sig det', async () => {
+        const doneB = s.btn(bar, p.sayBtn || 'Sig det', async () => {
           const ok = r.answers.some((x) => norm(words(x)) === norm(picked.map(String)));
           K.tally(p.id, ok);
           pool.querySelectorAll('button').forEach((b) => { b.disabled = true; });
           if (ok) { score++; K.ART.pop(built); K.VOICE.say(r.answers[0], null, true); const lit = body.querySelectorAll('.tail span')[score - 1]; if (lit) lit.classList.add('lit'); } else K.ART.shake(built);
-          K.feedback(s, body, ok, r.answers[0] + '!', r.why);
+          K.feedback(s, body, ok, r.answers[0] + (r.end || p.end || '!'), r.why);
           await K.after(s, body, ok);
           i++; round();
         }, { answer: true, cls: 'main', data: { done: '1' } });

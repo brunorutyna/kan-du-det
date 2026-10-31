@@ -52,6 +52,7 @@
   // ---------- flow: chapter cards remember how far you got; replay one chapter from the title
   K.SCREENS.act = function (root, p, s) {
     const st = K.st;
+    if (p.do === 'ranks' && !st.replay && st.part !== 2) K.save.stats.lastEnding = K.endingOf(st);
     if (p.do === 'ranks' && !st.replay) {
       st.ranks = {}; st.score = 0;
       Object.entries(st.tally).forEach(([g, t]) => { st.ranks[g] = K.rank(t.ok, t.n); st.score += t.ok; const b = K.save.stats.ranks[g]; if (!b || 'SABC'.indexOf(st.ranks[g]) < 'SABC'.indexOf(b)) K.save.stats.ranks[g] = st.ranks[g]; });
@@ -78,8 +79,23 @@
     K.st = Object.assign(K.newRun(), { replay: ch, step: K.chapterStart(ch) });
     K.goStep();
   };
+  // ---------- Part 2: starts after the ending of part 1, from the title
+  K.part2Start = () => K.FLOW.findIndex((x) => x.part2);
+  K.start2 = function () {
+    K.save.stats.runs++;
+    const run = Object.assign(K.newRun(), { step: K.part2Start(), part: 2 });
+    run.flags.prev = K.save.stats.lastEnding || null;
+    K.save.run = run; K.st = run; K.persist();
+    K.goStep();
+  };
+  K.CONFIG.openEnding = (st) => st.part === 2;
   K.CONFIG.titleExtra = function (menu, s) {
     K.MUSIC.set('title');
+    const S = K.save.stats;
+    if ((S.done || 0) >= 1 || (S.reached || 0) >= 7) {
+      const b = s.btn(menu, 'Del 2: Tuen ▸', () => { K.MUSIC.unlock(); K.start2(); }, { cls: 'main part2', data: { bot: 'part2' } });
+      if (/[?&]part2/.test(location.search)) s.bot = () => b;
+    }
     const n = K.save.stats.reached || 0;
     if (n < 1) return;
     s.btn(menu, 'Kapitler', () => K.modal((box, close) => {

@@ -9,7 +9,7 @@ const http = require('http'), fs = require('fs'), path = require('path');
 const ROOT = path.join(__dirname, '..');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i < 0 ? d : (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true); };
-const RUNS = +opt('--runs', 2), REAL = !!opt('--real', false), SHOTS = opt('--shots', null), MODE = opt('--mode', null);
+const PART2 = !!opt('--part2', false), RUNS = +opt('--runs', 2), REAL = !!opt('--real', false), SHOTS = opt('--shots', null), MODE = opt('--mode', null);
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml', '.mp3': 'audio/mpeg', '.txt': 'text/plain', '.json': 'application/json' };
 const serve = () => new Promise((res) => {
   const srv = http.createServer((req, rsp) => {
@@ -30,8 +30,8 @@ const serve = () => new Promise((res) => {
     page.on('pageerror', (e) => problems.push('page error: ' + e));
     page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) problems.push('console: ' + m.text().slice(0, 300)); });
     page.on('response', (r) => { if (r.status() >= 400 && !/version\.txt/.test(r.url())) problems.push('missing file: ' + r.url().replace(/^.*?\/\/[^/]+/, '')); });
-    await page.goto(`http://localhost:${port}/?debug${REAL ? '' : '&fast'}`);
-    await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* */ } });
+    await page.goto(`http://localhost:${port}/?debug${REAL ? '' : '&fast'}${PART2 ? '&part2' : ''}`);
+    await page.evaluate((p2) => { try { localStorage.clear(); if (p2) localStorage.setItem('dk.toerlagt', JSON.stringify({ v: 1, stats: { runs: 1, done: 1, reached: 6, ranks: {}, endings: { 'Tørlagt': 1 }, missed: {}, lastEnding: 'Tørlagt' }, run: null })); } catch (e) { /* */ } }, PART2);
     await page.reload();
     const t0 = Date.now(); let ticks = 0, idle = 0, lastSig = '', same = 0, lastScreen = '', screens = new Set(), done = false;
     while (Date.now() - t0 < 10 * 60 * 1000) {

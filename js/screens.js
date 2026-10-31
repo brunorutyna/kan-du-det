@@ -19,7 +19,7 @@
     if (K.CONFIG.back) s.btn(menu, K.esc(K.CONFIG.back.label), () => { location.href = K.CONFIG.back.href; }, { cls: 'ghost' });
     const st = K.save.stats;
     root.appendChild(el('div', 'foot', `Spillet ${st.done}× · Slutninger ${Object.keys(st.endings).length}/${K.CONFIG.endings || 1}`));
-    s.bot = () => root.querySelector('[data-bot="new"]');
+    s.bot = s.bot || (() => root.querySelector('[data-bot="new"]'));
   };
 
   // Time or chapter card: ≤ 1.1 s, a tap skips it.
@@ -93,13 +93,14 @@
     const st = K.st || K.newRun();
     const ending = K.CONFIG.ending ? K.CONFIG.ending(st) : 'slut';
     const S2 = K.save.stats;
-    if (K.save.run) { S2.done++; S2.endings[ending] = (S2.endings[ending] || 0) + 1; K.save.run = null; K.persist(); }
+    const open = K.CONFIG.openEnding && K.CONFIG.openEnding(st);
+    if (K.save.run) { S2.done++; if (!open) S2.endings[ending] = (S2.endings[ending] || 0) + 1; else S2.part2done = (S2.part2done || 0) + 1; K.save.run = null; K.persist(); }
     K.SFX.play('win'); K.ended = true;
     root.appendChild(K.ART.scene('title'));
     const ranks = Object.entries(st.ranks).map(([id, r]) => `<div class="rk-row"><span>${K.esc(id)}</span><b class="rk rk-${r}">${r}</b></div>`).join('');
-    root.appendChild(el('div', 'end-box', `<div class="big">SLUT</div><div class="sub">${K.esc(ending)}</div>${ranks}<div class="small">Point: ${st.score}</div>`));
+    root.appendChild(el('div', 'end-box', `<div class="big">${open ? 'Fortsættes …' : 'SLUT'}</div><div class="sub">${K.esc(open ? '' : ending)}</div>${ranks}<div class="small">Point: ${st.score}</div>`));
     const menu = el('div', 'menu'); root.appendChild(menu);
-    s.btn(menu, 'Spil igen', () => K.start(true), { cls: 'main' });
+    s.btn(menu, 'Spil igen', () => (open && K.start2 ? K.start2() : K.start(true)), { cls: 'main' });
     s.btn(menu, 'Til start', () => K.show('title'));
   };
 })(window.K = window.K || {});

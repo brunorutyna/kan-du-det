@@ -10,7 +10,7 @@
   const el = K.el;
   K.game('quiz', {
     title: 'Quiz',
-    texts: (p) => p.rounds.flatMap((r) => [r.right, r.say, r.prompt, r.says, r.colWrong].filter(Boolean)),
+    texts: (p) => p.rounds.flatMap((r) => [r.right, r.say, r.prompt, r.says, r.colWrong].filter(Boolean)).concat((p.fixed || []).filter((x) => /^[a-zæøå]/i.test(x))),
     lint(p) {
       const e = [];
       p.rounds.forEach((r, i) => {
@@ -21,6 +21,8 @@
         if (r.who && !K.CAST[r.who]) e.push(`round ${i}: unknown speaker ${r.who}`);
         if (p.variant === 'puklen' && r.lieCol && !(r.colWrong && r.says)) e.push(`round ${i}: puklen lie colour needs colWrong and says`);
         if (p.variant === 'gruppen' && !r.cue) e.push(`round ${i}: gruppen needs a cue`);
+        if (p.fixed && [r.right].concat(r.wrong).some((o) => !p.fixed.includes(o))) e.push(`round ${i}: option not in the fixed list`);
+        (r.cast || []).forEach((c) => { if (!K.CAST[c]) e.push(`round ${i}: unknown cast ${c}`); });
       });
       return e;
     },
@@ -50,6 +52,11 @@
           sg.appendChild(K.ART.actor(r.who || (v === 'replay' ? 'flue' : 'kaktus')));
           if (r.say) { const c = K.CAST[r.who]; const l = el('div', 'line', `<div class="who">${K.esc(c.name)}</div><div class="da">${K.da(r.say)}</div>`); l.style.borderColor = c.color; body.appendChild(l); K.VOICE.say(r.say, r.who, i > 0); }
           if (r.cue) body.appendChild(el('div', 'cue', r.cue === '❗' ? '❗ Be surprised' : '🤝 Agree'));
+        } else if (v === 'scene') {
+          (r.cast || p.cast || []).forEach((c) => sg.appendChild(K.ART.actor(c)));
+          if (r.e) sg.appendChild(el('div', 'bigthing', r.e));
+          if (r.say) { const c = K.CAST[r.who]; const l = el('div', 'line', `<div class="who">${K.esc(c.name)}</div><div class="da">${K.da(r.say)}</div>`); l.style.borderColor = c.color; body.appendChild(l); K.VOICE.say(r.say, r.who, i > 0); }
+          if (p.meter) body.appendChild(el('div', 'meter', p.meter.repeat(score) + '<span class="dim">' + p.meter.repeat(Math.max(0, rounds.length - score)) + '</span>'));
         } else if (v === 'review') {
           const sp = K.ART.actor('svampen'); sp.style.setProperty('--grow', String(1 + score * 0.12)); sp.classList.add('grows'); sg.appendChild(sp);
           sg.appendChild(el('div', 'clouds', '☁️'.repeat(Math.max(0, rounds.length - i))));
@@ -63,10 +70,10 @@
         const r = rounds[i];
         body.appendChild(el('div', 'progress', `${i + 1} / ${rounds.length}`));
         const flying = stage(r);
-        if (r.prompt) body.appendChild(el('div', 'prompt', K.da(r.prompt)));
+        if (r.prompt) body.appendChild(el('div', 'prompt', K.da(r.prompt) + (r.hint ? ` <span class="small">(${K.esc(r.hint)})</span>` : '')));
         const grid = el('div', 'opts'); body.appendChild(grid);
         const opts = [r.right].concat(r.wrong.slice(0, drunk && r.colWrong ? 1 : 2), drunk && r.colWrong ? [r.colWrong] : []);
-        K.shuffle(opts).forEach((o) => s.btn(grid, K.da(o), (e, b) => answer(r, o === r.right, b, flying), { answer: true, cls: 'opt', data: { right: o === r.right ? '1' : '0' } }));
+        (p.fixed ? opts.slice().sort((a, b) => p.fixed.indexOf(a) - p.fixed.indexOf(b)) : K.shuffle(opts)).forEach((o) => s.btn(grid, K.da(o), (e, b) => answer(r, o === r.right, b, flying), { answer: true, cls: 'opt', data: { right: o === r.right ? '1' : '0' } }));
         s.btn(body, 'Jeg ved det ikke (EN)', (e, b) => { if (K.st) K.st.english++; answer(r, false, b, flying); }, { answer: true, cls: 'ghost small english', data: { right: '0' } });
         s.bot = (mode) => {
           const vv = [...grid.querySelectorAll('[data-right]')];

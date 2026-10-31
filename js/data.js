@@ -278,6 +278,8 @@
     ] },
     { screen: 'act', do: 'ranks' },
     { screen: 'panel', scene: 'ude', cast: ['kaktus', 'flue'], music: 'happy', lines: [(st) => K.epilogue(st)] },
+    { screen: 'end' },
+    // Part 2 is appended by js/part2.js
   ];
 
   K.epilogue = function (st) {
