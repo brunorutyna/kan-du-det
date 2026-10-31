@@ -22,17 +22,16 @@
     s.bot = s.bot || (() => root.querySelector('[data-bot="new"]'));
   };
 
-  // Time or chapter card: ≤ 1.1 s, a tap skips it.
+  // Time or chapter card: shows for 1.1 s and moves on by itself. Not tappable: a stray tap must never skip anything.
   S.card = function (root, p, s) {
-    const b = el('button', 'card', `<div class="big">${K.esc(p.title)}</div>` + (p.sub ? `<div class="sub">${K.esc(p.sub)}</div>` : ''));
-    b.type = 'button'; b.dataset.tap = '1';
-    b.onclick = () => s.finish();
+    const b = el('div', 'card', `<div class="big">${K.esc(p.title)}</div>` + (p.sub ? `<div class="sub">${K.esc(p.sub)}</div>` : ''));
     root.appendChild(b);
+    s.busy = true;
     s.timer(() => s.finish(), p.ms || 1100);
-    s.bot = () => b;
+    s.bot = () => null;
   };
 
-  // Story lines. Lines appear one by one; ONLY the Videre button (or empty space below the lines) advances.
+  // Story lines. Lines appear one by one; ONLY the Videre button advances (a tap anywhere else never does).
   // Line kinds: {w:'castId', da, en} spoken Danish · {n:'English narration'} · {th:'inner thought'}
   S.panel = async function (root, p, s) {
     const st = K.st;
@@ -44,7 +43,6 @@
     const bar = el('div', 'bar'); root.appendChild(bar);
     let advance = null;
     const next = s.btn(bar, 'Videre ▸', () => advance && advance(), { cls: 'next', data: { next: '1' } });
-    s.on(box, 'click', (e) => { if (e.target === box && advance) advance(); });
     s.bot = () => next;
     const lines = (p.lines || []).map((l) => (typeof l === 'function' ? l(st) : l)).flat().filter(Boolean);
     for (let i = 0; i < lines.length; i++) {

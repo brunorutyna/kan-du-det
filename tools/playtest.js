@@ -55,6 +55,28 @@ const serve = () => new Promise((res) => {
     const t0 = Date.now(); let ticks = 0, idle = 0, lastSig = '', same = 0, lastScreen = '', screens = new Set(), done = false;
     while (Date.now() - t0 < 10 * 60 * 1000) {
       await page.waitForTimeout(REAL ? 450 : 60);
+      // a stray tap anywhere that is not a button must never move the game on: wait until the screen is still,
+      // tap empty space (prefer the gap around the story text), check it did not change
+      if (ticks % 3 === 0) {
+        const t0 = await page.evaluate(() => window.K.cur && window.K.cur.token);
+        await page.waitForTimeout(REAL ? 200 : 250);
+        const pt = await page.evaluate((t0) => {
+          const K = window.K; if (!K.cur || K.cur.token !== t0 || !/^(panel|choice|lesson)$/.test(K.cur.id) || document.querySelector('.modal')) return null;
+          const free = (e) => e && !e.closest('button, a, input, [data-tap], .w, .modal, .line, .narr, .think');
+          const box = document.querySelector('#screen .lines');
+          const areas = [box && box.getBoundingClientRect(), { left: 10, top: 70, right: innerWidth - 10, bottom: innerHeight - 20 }].filter(Boolean);
+          for (const q of areas) for (let k = 0; k < 40; k++) {
+            const x = q.left + 4 + Math.random() * Math.max(1, q.right - q.left - 8), y = q.top + 4 + Math.random() * Math.max(1, q.bottom - q.top - 8);
+            if (free(document.elementFromPoint(x, y))) return { x, y, id: K.cur.id };
+          }
+          return null;
+        }, t0);
+        if (pt) {
+          await page.touchscreen.tap(pt.x, pt.y); await page.waitForTimeout(250);
+          const t1 = await page.evaluate(() => window.K.cur.token);
+          if (t1 !== t0) { problems.push(`a stray tap on empty space moved "${pt.id}" on`); break; }
+        }
+      }
       const r = await page.evaluate((mode) => {
         const res = window.K && window.K.botTick ? window.K.botTick(mode) : { idle: true };
         const scr = document.querySelector('#screen');

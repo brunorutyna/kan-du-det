@@ -145,7 +145,7 @@
   }
   K.screen = screen;
 
-  // Comic panel with lines. Lines appear one by one; only Videre (or empty space below) advances.
+  // Comic panel with lines. Lines appear one by one; only Videre advances (a stray tap anywhere else never does).
   K.panel = async function (p) {
     const st = K.st;
     const s = screen('panel ' + (p.fx || ''));
@@ -167,7 +167,7 @@
       if (l.da && l.w) spoken = K.audio.say(l.w, l.da, true);
       // English captions and thoughts flow on by themselves; the player taps after Danish lines and at the end
       if (!l.da && i < lines.length - 1) { await wait(120); continue; }
-      await new Promise((res) => { next.onclick = () => { K.audio.sfx('tap'); res(); }; box.onclick = (e) => { if (e.target === box) res(); }; });
+      await new Promise((res) => { next.onclick = () => { K.audio.sfx('tap'); res(); }; });
       if (l.da && l.w && !K.fast) await Promise.race([spoken, wait(10)]);
     }
     next.onclick = null;

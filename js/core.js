@@ -80,7 +80,10 @@
         opts = opts || {};
         const b = el('button', 'btn ' + (opts.cls || ''), html); b.type = 'button'; b.dataset.tap = '1';
         if (opts.data) Object.assign(b.dataset, opts.data);
+        const born = performance.now();
         b.addEventListener('click', guard(s, (e) => {
+          // a button ignores taps in its first 0.3 s, so the second half of a double tap never lands on the next screen or round
+          if (!K.fast && performance.now() - born < 300) return;
           if (opts.answer) { if (s.locked) return; s.locked = true; }
           if (!opts.silent) K.SFX.play('tap');
           fn(e, b);
