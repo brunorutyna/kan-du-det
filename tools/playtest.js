@@ -66,6 +66,18 @@ const serve = () => new Promise((res) => {
         return Object.assign(res, { text, sig: (window.K.cur && window.K.cur.token) + '|' + text.slice(-200), screen: res.screen || (window.K.cur && window.K.cur.id), cover: gr ? (gr.width * gr.height) / (innerWidth * innerHeight) : 1, imgs, tiny, err: res.err || (document.querySelector('.errbox') ? [document.querySelector('.errbox').innerText] : null) });
       }, mode);
       ticks++;
+      // leave mid-story and come back: Fortsæt must land on the same step (Bruno lost his place once)
+      if (ticks === 90 && run === 1) {
+        const was = await page.evaluate(() => window.K.save.run && window.K.save.run.step);
+        if (was > 0) {
+          await page.reload(); await page.waitForTimeout(400);
+          const c = await page.$('[data-bot="continue"]');
+          if (!c) { problems.push('after leaving mid-story the title has no Fortsæt'); break; }
+          await c.click(); await page.waitForTimeout(300);
+          const now = await page.evaluate(() => window.K.st && window.K.st.step);
+          if (now !== was) { problems.push(`Fortsæt resumed at step ${now}, not ${was}`); break; }
+        }
+      }
       if (r.err) { problems.push(...r.err.map((e) => 'game error: ' + String(e).slice(0, 400))); break; }
       if (r.done) { done = true; break; }
       if (/\bundefined\b|NaN|\[object Object\]/.test(r.text)) { problems.push('bad text on screen: ' + r.text.match(/.{0,40}(undefined|NaN|\[object Object\]).{0,40}/)[0]); break; }

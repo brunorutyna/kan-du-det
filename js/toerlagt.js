@@ -89,22 +89,54 @@
     K.goStep();
   };
   K.CONFIG.openEnding = (st) => st.part === 2;
+  // the chapter a step belongs to (the last chapter card at or before it)
+  K.chapterOf = (step) => { let ch = 1; for (let i = 0; i <= step && i < K.FLOW.length; i++) if (K.FLOW[i].ch) ch = K.FLOW[i].ch; return ch; };
+  // starting something new while a story is in progress asks first (it used to wipe the place silently)
+  K.confirmNew = function (go) {
+    const run = K.save.run;
+    if (!run || !(run.step > 0)) return go();
+    const ch = K.chapterOf(run.step), c = K.CHAPTERS[ch - 1] || {};
+    K.modal((box, close) => {
+      box.appendChild(el('h2', '', 'Begynde forfra?'));
+      box.appendChild(el('div', 'small', `Du er i kapitel ${ch}: ${K.esc(c.title || '')}. Hvis du begynder nu, mister du det sted.<br><span class="en">You are in chapter ${ch}. Starting now loses that place.</span>`));
+      const keep = el('button', 'btn main', 'Fortsæt historien'); keep.type = 'button'; keep.dataset.tap = '1';
+      keep.onclick = () => { close(); K.MUSIC.unlock(); K.start(false); };
+      const yes = el('button', 'btn', 'Ja, begynd'); yes.type = 'button'; yes.dataset.tap = '1';
+      yes.onclick = () => { close(); go(); };
+      box.appendChild(keep); box.appendChild(yes);
+    });
+  };
   K.CONFIG.titleExtra = function (menu, s) {
     K.MUSIC.set('title');
-    const S = K.save.stats;
-    if ((S.done || 0) >= 1 || (S.reached || 0) >= 7) {
-      const b = s.btn(menu, 'Del 2: Tuen ▸', () => { K.MUSIC.unlock(); K.start2(); }, { cls: 'main part2', data: { bot: 'part2' } });
+    const S = K.save.stats, run = K.save.run, mid = run && run.step > 0;
+    // Fortsæt says where you are; Begynd forfra asks before wiping
+    if (mid) {
+      const ch = K.chapterOf(run.step), c = K.CHAPTERS[ch - 1] || {};
+      const f = menu.querySelector('[data-bot="continue"]');
+      if (f) f.innerHTML = `Fortsæt<span class="resume">${run.part === 2 ? 'Del 2 · ' : ''}Kapitel ${ch}: ${K.esc(c.title || '')}</span>`;
+      const fresh = menu.querySelector('[data-bot="new"]');
+      if (fresh) { const nb = fresh.cloneNode(true); fresh.replaceWith(nb); nb.onclick = () => K.confirmNew(() => { K.MUSIC.unlock(); K.start(true); }); }
+    }
+    // Del 2 only when you are not already in it; never a second orange button next to Fortsæt
+    if (((S.done || 0) >= 1 || (S.reached || 0) >= 7) && !(run && run.part === 2)) {
+      const b = s.btn(menu, 'Del 2: Tuen ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start2(); }), { cls: (mid ? '' : 'main ') + 'part2', data: { bot: 'part2' } });
       if (/[?&]part2/.test(location.search)) s.bot = () => b;
     }
-    const n = K.save.stats.reached || 0;
+    const n = S.reached || 0;
     if (n < 1) return;
     s.btn(menu, 'Kapitler', () => K.modal((box, close) => {
       box.appendChild(el('h2', '', 'Kapitler'));
-      box.appendChild(el('div', 'small', 'Replay a lesson and its game for a better rank. The story is not changed.'));
+      box.appendChild(el('div', 'small', 'Spil en lektion og dens spil igen for en bedre rang. Historien ændres ikke.<br><span class="en">Replay a lesson for a better rank. Your story is not changed.</span>'));
+      const here = mid ? K.chapterOf(run.step) : 0;
+      const p2 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part2); });
       K.CHAPTERS.forEach((c, i) => {
         const ch = i + 1;
-        const b = el('button', 'btn' + (ch > n ? ' locked' : ''), `<b>${ch}. ${K.esc(c.title)}</b> <span class="small">${ch > n ? 'Låst' : K.esc(c.topic)}</span>`);
-        b.type = 'button'; b.dataset.tap = '1'; b.disabled = ch > n;
+        if (i === 0) box.appendChild(el('div', 'chap-part', 'Del 1'));
+        if (i === p2) box.appendChild(el('div', 'chap-part', 'Del 2'));
+        const locked = ch > n;
+        const b = el('button', 'btn chap' + (locked ? ' locked' : '') + (ch === here ? ' here' : ''),
+          `<span class="n">${ch}</span><span class="t"><b>${K.esc(c.title)}</b><span>${locked ? 'Låst' : K.esc(c.topic)}${ch === here ? ' · du er her' : ''}</span></span>`);
+        b.type = 'button'; b.dataset.tap = '1'; b.disabled = locked;
         b.onclick = () => { close(); K.replay(ch); };
         box.appendChild(b);
       });
