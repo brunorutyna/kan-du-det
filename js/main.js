@@ -10,7 +10,9 @@
     const vis = (b) => b && !b.disabled && !b.hidden && b.offsetParent !== null;
     let b = null;
     try { b = K.cur && K.cur.bot && K.cur.bot(mode); } catch (e) { return { err: [String(e.stack || e)] }; }
-    if (!vis(b)) b = [...document.querySelectorAll('.modal [data-tap], #screen [data-next], #screen [data-tap]')].find((x) => vis(x) && !x.classList.contains('menu-btn') && !x.classList.contains('mini') && !x.classList.contains('english'));
+    // fallback in priority order: a modal, then Videre, then anything tappable (querySelectorAll with a comma list would return document order)
+    const ok = (x) => vis(x) && !x.classList.contains('menu-btn') && !x.classList.contains('mini') && !x.classList.contains('english');
+    if (!vis(b)) b = ['.modal [data-tap]', '#screen [data-next]', '#screen [data-tap]'].map((q) => [...document.querySelectorAll(q)].find(ok)).find(Boolean);
     if (!b) return { idle: true, screen: K.cur && K.cur.id };
     b.click();
     return { clicked: (b.textContent || '').trim().slice(0, 30), screen: before };

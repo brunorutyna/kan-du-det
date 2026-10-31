@@ -15,7 +15,7 @@
     },
     screen(root, p, s) {
       const { game, body } = K.frame(root, p.title, p.sub);
-      game.classList.add('trip-bg');
+      if (!p.calm) game.classList.add('trip-bg'); else game.classList.add('calm-bg');
       s.busy = true; // real-time drift: the watchdog must not fire while things float
       const need = p.need || 6;
       const field = el('div', 'drift'); body.appendChild(field);

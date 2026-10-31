@@ -10,22 +10,25 @@
     const need = {};
     r.answers.forEach((a) => { const c = {}; words(a).forEach((w) => { const t = tileOf(w); c[t] = (c[t] || 0) + 1; }); Object.entries(c).forEach(([t, n]) => { need[t] = Math.max(need[t] || 0, n); }); });
     const out = []; Object.entries(need).forEach(([t, n]) => { for (let i = 0; i < n; i++) out.push(t); });
-    return out.concat((r.traps || []).map(tileOf));
+    const drunk = r.drunk && K.st && K.st.__drunkFlag && K.st.flags[K.st.__drunkFlag] ? [r.drunk] : [];
+    return out.concat((r.traps || []).concat(drunk).map(tileOf));
   }
   K.game('komplimenter', {
     title: 'Komplimenter',
-    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.traps || [])),
+    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.traps || [], r.drunk ? [r.drunk] : [])),
     lint(p) {
       const e = [];
       p.rounds.forEach((r, i) => {
         if (!r.answers || !r.answers.length) e.push(`round ${i}: no answers`);
         (r.traps || []).forEach((t) => { if (r.answers.some((a) => words(a).map(tileOf).includes(tileOf(t)))) e.push(`round ${i}: trap "${t}" is also an answer word`); });
-        if (tilesFor(r).length > 10) e.push(`round ${i}: too many tiles`);
+        if (tilesFor(r).length > 13) e.push(`round ${i}: too many tiles`);
+        if (r.drunk && r.answers.some((a) => words(a).map(tileOf).includes(tileOf(r.drunk)))) e.push(`round ${i}: drunk tile is an answer word`);
       });
       return e;
     },
     screen(root, p, s) {
       const { body } = K.frame(root, p.title, p.sub);
+      if (K.st) K.st.__drunkFlag = p.drunkFlag || null;
       const rounds = K.shuffle(p.rounds).slice(0, p.n || p.rounds.length);
       let i = 0, score = 0;
       function tail() {

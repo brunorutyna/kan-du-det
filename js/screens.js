@@ -77,7 +77,7 @@
   S.choice = function (root, p, s) {
     root.appendChild(K.ART.scene(p.scene, K.st));
     const c = el('div', 'choice'); root.appendChild(c);
-    if (p.prompt) c.appendChild(el('div', 'prompt', K.esc(p.prompt)));
+    if (p.prompt) c.appendChild(el('div', 'prompt', K.da(p.prompt)));
     const opts = typeof p.options === 'function' ? p.options(K.st) : p.options;
     opts.forEach((o, i) => s.btn(c, o.da ? K.da(o.da) : K.esc(o.en), () => {
       if (o.set) Object.assign(K.st.flags, o.set);

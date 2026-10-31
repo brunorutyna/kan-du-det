@@ -46,13 +46,19 @@ if (!Array.isArray(K.FLOW) || !K.FLOW.length) err.push('K.FLOW is empty');
     if (step.try.wrong.includes(step.try.right)) err.push(`${where}: try has the right answer among the wrong`);
   }
 });
+// every flag any choice can set, in every combination (capped), each with low and high mini-game scores
+const flagNames = new Set();
+(K.FLOW || []).forEach((step) => { if (step.screen !== 'choice') return; const o = typeof step.options === 'function' ? [].concat(step.options(Object.assign(K.newRun(), { tally: {} })), step.options(Object.assign(K.newRun(), { tally: new Proxy({}, { get: () => ({ ok: 99, n: 99 }) }) }))) : step.options; o.forEach((x) => Object.keys(x.set || {}).forEach((k) => flagNames.add(k))); });
+const names = [...flagNames].slice(0, 12);
 const combos = [];
-[false, true].forEach((a) => [false, true].forEach((b) => [false, true].forEach((c) => [false, true].forEach((d) => combos.push({ drank1: a, stayed2: b, final: c, confessed: d })))));
-combos.forEach((f) => {
-  const st = Object.assign(K.newRun(), { flags: f });
+for (let m = 0; m < (1 << names.length); m += Math.max(1, (1 << names.length) >> 9)) { const f = {}; names.forEach((k, i) => { f[k] = !!(m & (1 << i)); }); combos.push(f); }
+const tallies = [{}, new Proxy({}, { get: () => ({ ok: 99, n: 99 }) })];
+combos.forEach((f) => tallies.forEach((tl) => {
+  const st = Object.assign(K.newRun(), { flags: f, tally: tl });
   (K.FLOW || []).forEach((step, i) => (step.lines || []).forEach((l) => { const ls = [].concat(typeof l === 'function' ? l(st) : l).flat(); ls.forEach((x) => { if (!x) return; if (x.da) add(x.da, `FLOW[${i}] (flags)`); if (x.w && !(K.CAST || {})[x.w]) err.push(`FLOW[${i}]: unknown speaker ${x.w}`); }); }));
   if (K.epilogue) K.epilogue(st).forEach((x) => { if (x.da) add(x.da, 'epilogue'); });
-});
+  (K.FLOW || []).forEach((step, i) => { if (step.screen === 'choice' && typeof step.options === 'function') step.options(st).forEach((o) => { if (o.da) add(o.da, `FLOW[${i}] choice`); (o.after || []).forEach((x) => { if (x.da) add(x.da, `FLOW[${i}] after`); }); }); if (step.screen === 'choice' && step.prompt) add(step.prompt, `FLOW[${i}] prompt`); });
+}));
 Object.entries(K.CAST || {}).forEach(([id, c]) => { if (!c.e) err.push(`cast ${id}: no creature emoji (no humans allowed)`); });
 // blocklist of religious words (whole words only), and no countdown wording
 const RELIGION = ['gud', 'guder', 'djævel', 'djævelen', 'satan', 'lucifer', 'fristeren', 'fristelse', 'kirke', 'engel', 'engle', 'bøn', 'tilbede', 'himmel', 'helvede', 'synd', 'profet', 'jesus', 'faste', 'dæmon', 'tempel', 'præst', 'kors', 'frelse', 'jul', 'julen', 'påske', 'påsken', 'devil', 'angel', 'heaven', 'hell', 'pray', 'prayer', 'church', 'temptation', 'tempter', 'forty', 'fyrre', 'sekunder', 'nedtælling', 'københavn', 'aarhus', 'århus', 'odense', 'aalborg', 'ærø', 'esbjerg', 'roskilde', 'danmark', 'denmark', 'copenhagen', 'menneske', 'mennesker', 'human', 'humans'];

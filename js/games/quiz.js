@@ -33,7 +33,10 @@
       const { game, body } = K.frame(root, p.title, p.sub);
       if (drunk || v === 'review') game.classList.add('trip-bg');
       if (v === 'puklen') K.MUSIC.set(drunk ? 'trip' : 'calm');
-      const rounds = (p.keep ? p.rounds.slice() : K.shuffle(p.rounds)).slice(0, p.n || p.rounds.length);
+      const N = p.n || p.rounds.length;
+      let rounds = p.keep ? p.rounds.slice(0, N) : K.shuffle(p.rounds.filter((r) => !r.must)).slice(0, N - p.rounds.filter((r) => r.must).length);
+      p.rounds.filter((r) => r.must && !p.keep).forEach((r) => rounds.splice(Math.min(rounds.length, 2), 0, r)); // story rounds always come, early
+      let wrongPile = 0; const rightPile = [];
       let i = 0, score = 0, ts = 0;
       const pile = [];
       function stage(r) {
@@ -57,6 +60,8 @@
           if (r.e) sg.appendChild(el('div', 'bigthing', r.e));
           if (r.say) { const c = K.CAST[r.who]; const l = el('div', 'line', `<div class="who">${K.esc(c.name)}</div><div class="da">${K.da(r.say)}</div>`); l.style.borderColor = c.color; body.appendChild(l); K.VOICE.say(r.say, r.who, i > 0); }
           if (p.meter) body.appendChild(el('div', 'meter', p.meter.repeat(score) + '<span class="dim">' + p.meter.repeat(Math.max(0, rounds.length - score)) + '</span>'));
+          if (p.pileWrong) { const pw = el('div', 'pile wrongpile', wrongPile ? p.pileWrong.repeat(wrongPile) : ''); sg.firstChild && sg.firstChild.appendChild(pw); }
+          if (p.pileRight) body.appendChild(el('div', 'pile', rightPile.join('') || '<span class="small">…</span>'));
         } else if (v === 'review') {
           const sp = K.ART.actor('svampen'); sp.style.setProperty('--grow', String(1 + score * 0.12)); sp.classList.add('grows'); sg.appendChild(sp);
           sg.appendChild(el('div', 'clouds', '☁️'.repeat(Math.max(0, rounds.length - i))));
@@ -88,10 +93,12 @@
         if (ok) {
           score++; K.ART.pop(b); const q = b.getBoundingClientRect(); K.ART.burst(q.left + q.width / 2, q.top + q.height / 2); K.VOICE.say(r.right, null, true);
           if (v === 'puklen') { pile.push(r.e); if (flying) flying.classList.add('fly'); }
+          if (p.pileRight && r.e) rightPile.push(r.e);
         } else {
           K.ART.shake(b);
           if (v === 'firbenet') { ts++; const t = body.querySelector('.tstack'); if (t) { t.innerHTML = '<b>T</b>'.repeat(ts); K.ART.pop(t); } }
           if (v === 'puklen' && flying) flying.classList.add('back');
+          if (p.pileWrong) { wrongPile++; const w = body.querySelector('.wrongpile'); if (w) { w.innerHTML = p.pileWrong.repeat(wrongPile); K.ART.pop(w); } }
         }
         K.feedback(s, body, ok, r.right, r.why);
         await K.after(s, body, ok);
