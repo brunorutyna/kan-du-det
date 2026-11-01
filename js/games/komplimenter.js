@@ -15,7 +15,7 @@
   }
   K.game('komplimenter', {
     title: 'Komplimenter',
-    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.traps || [], r.drunk ? [r.drunk] : [])),
+    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.traps || [], r.drunk ? [r.drunk] : [], r.ask ? [r.ask] : [])),
     lint(p) {
       const e = [];
       p.rounds.forEach((r, i) => {
@@ -43,7 +43,7 @@
         const sg = el('div', 'qstage'); body.appendChild(sg);
         const a = K.ART.actor(p.actor || 'skorpion'); sg.appendChild(a); a.appendChild(tail());
         if (r.e) sg.appendChild(r.col ? K.item(r.e, r.col, r.pat, true) : el('div', 'bigthing', r.e));
-        body.appendChild(el('div', 'prompt', K.da(p.ask || 'Sig noget pænt!') + ` <span class="small">(${K.esc(r.en || p.askEn || 'Build the compliment.')})</span>`));
+        body.appendChild(el('div', 'prompt', K.da(r.ask || p.ask || 'Sig noget pænt!') + ` <span class="small">(${K.esc(r.en || p.askEn || 'Build the compliment.')})</span>`));
         const built = el('div', 'built'); body.appendChild(built);
         const pool = el('div', 'pool'); body.appendChild(pool);
         const bar = el('div', 'row'); body.appendChild(bar);

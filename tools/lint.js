@@ -49,9 +49,11 @@ if (!Array.isArray(K.FLOW) || !K.FLOW.length) err.push('K.FLOW is empty');
 // every flag any choice can set, in every combination (capped), each with low and high mini-game scores
 const flagNames = new Set();
 (K.FLOW || []).forEach((step) => { if (step.screen !== 'choice') return; const o = typeof step.options === 'function' ? [].concat(step.options(Object.assign(K.newRun(), { tally: {} })), step.options(Object.assign(K.newRun(), { tally: new Proxy({}, { get: () => ({ ok: 99, n: 99 }) }) }))) : step.options; o.forEach((x) => Object.keys(x.set || {}).forEach((k) => flagNames.add(k))); });
-const names = [...flagNames].slice(0, 30);
-const combos = [];
-for (let m = 0; m < (1 << names.length); m += Math.max(1, (1 << names.length) >> 9)) { const f = {}; names.forEach((k, i) => { f[k] = !!(m & (1 << i)); }); combos.push(f); }
+const names = [...flagNames];
+// all false, all true, and 600 seeded random mixes (too many flags for every combination)
+let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+const combos = [{}, Object.fromEntries(names.map((k) => [k, true]))];
+for (let m = 0; m < 600; m++) combos.push(Object.fromEntries(names.map((k) => [k, rnd() < 0.5])));
 const tallies = [{}, new Proxy({}, { get: () => ({ ok: 99, n: 99 }) })];
 combos.forEach((f) => tallies.forEach((tl) => {
   const st = Object.assign(K.newRun(), { flags: f, tally: tl });

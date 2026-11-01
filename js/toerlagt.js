@@ -98,8 +98,17 @@
     K.save.run = run; K.st = run; K.persist();
     K.goStep();
   };
-  K.CONFIG.openEnding = (st) => st.part === 2 || st.part === 3;
-  K.CONFIG.again = (st) => (st.part === 3 ? K.start3() : st.part === 2 ? K.start2() : K.start(true));
+  // ---------- Part 4 (and later parts): start at the part's first card
+  K.partStart = (n) => K.FLOW.findIndex((x) => x['part' + n]);
+  K.startPart = function (n) {
+    K.save.stats.runs++;
+    const run = Object.assign(K.newRun(), { step: K.partStart(n), part: n });
+    K.save.run = run; K.st = run; K.persist();
+    K.goStep();
+  };
+  K.start4 = () => K.startPart(4);
+  K.CONFIG.openEnding = (st) => st.part >= 2;
+  K.CONFIG.again = (st) => (st.part === 4 ? K.start4() : st.part === 3 ? K.start3() : st.part === 2 ? K.start2() : K.start(true));
   // the chapter a step belongs to (the last chapter card at or before it)
   K.chapterOf = (step) => { let ch = 1; for (let i = 0; i <= step && i < K.FLOW.length; i++) if (K.FLOW[i].ch) ch = K.FLOW[i].ch; return ch; };
   // starting something new while a story is in progress asks first (it used to wipe the place silently)
@@ -135,9 +144,14 @@
       if (/[?&]part2/.test(location.search)) s.bot = () => b;
     }
     // Del 3 only when you are not already in it; never a second orange button next to Fortsæt
+    const has4 = (S.part3done || 0) >= 1 || (S.reached || 0) >= 20;
     if (has3 && !(run && run.part === 3)) {
-      const b = s.btn(menu, 'Del 3: Kaffehavet ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start3(); }), { cls: (mid ? '' : 'main ') + 'part3', data: { bot: 'part3' } });
+      const b = s.btn(menu, 'Del 3: Kaffehavet ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start3(); }), { cls: (mid || has4 ? 'ghost ' : 'main ') + 'part3', data: { bot: 'part3' } });
       if (/[?&]part3/.test(location.search)) s.bot = () => b;
+    }
+    if (has4 && !(run && run.part === 4)) {
+      const b = s.btn(menu, 'Del 4: Riffet ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start4(); }), { cls: (mid ? '' : 'main ') + 'part4', data: { bot: 'part4' } });
+      if (/[?&]part4/.test(location.search)) s.bot = () => b;
     }
     const n = S.reached || 0;
     if (n < 1) return;
@@ -147,11 +161,13 @@
       const here = mid ? K.chapterOf(run.step) : 0;
       const p2 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part2); });
       const p3 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part3); });
+      const p4 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part4); });
       K.CHAPTERS.forEach((c, i) => {
         const ch = i + 1;
         if (i === 0) box.appendChild(el('div', 'chap-part', 'Del 1'));
         if (i === p2) box.appendChild(el('div', 'chap-part', 'Del 2'));
         if (i === p3) box.appendChild(el('div', 'chap-part', 'Del 3'));
+        if (i === p4) box.appendChild(el('div', 'chap-part', 'Del 4'));
         const locked = ch > n;
         const b = el('button', 'btn chap' + (locked ? ' locked' : '') + (ch === here ? ' here' : ''),
           `<span class="n">${ch}</span><span class="t"><b>${K.esc(c.title)}</b><span>${locked ? 'Låst' : K.esc(c.topic)}${ch === here ? ' · du er her' : ''}</span></span>`);

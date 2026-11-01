@@ -179,3 +179,25 @@ button .w { border-bottom: 0; }
 .toggle.slider b { text-align: right; font-size: 14px; color: var(--dim); }
 .wrongpile { font-size: 18px; max-width: 120px; line-height: 1; text-align: center; min-height: 0; }
 .game.calm-bg { background: linear-gradient(180deg, #2a2f3a, #0f1116); }
+/* Del 4: board (stage / map) */
+.board { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: 8px; margin: 8px 0; }
+.tile-b { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 72px; padding: 6px 4px; gap: 2px; text-align: center; }
+.tile-b .te { font-size: 28px; line-height: 1; }
+.tile-b .tl { font-size: 13px; line-height: 1.2; }
+.tile-b.mirror { transform: scaleX(-1); opacity: .8; }
+.tile-b.mirror .tl { display: inline-block; transform: scaleX(-1); }
+.tile-b.locked { opacity: .45; }
+.tile-b.here { border-color: var(--accent, #ffb347); box-shadow: 0 0 0 2px var(--accent, #ffb347) inset; }
+.board.map .lv-oppe { background: #2a2433; } .board.map .lv-nede { background: #2b2018; }
+.binfo .req { font-size: 15px; margin: 4px 0; padding: 6px 10px; border-left: 3px solid #ffffff33; background: #0006; border-radius: 8px; }
+.bag { font-size: 20px; min-height: 26px; } .sand { min-height: 18px; }
+.opts-in { display: flex; flex-direction: column; gap: 8px; }
+/* Del 4: riff (real-time catcher) */
+.rfield { position: relative; flex: 1; min-height: 380px; margin: 0 16px; overflow: hidden; border-radius: 14px; touch-action: none; overscroll-behavior: none; user-select: none; -webkit-user-select: none; background: #0003; }
+.rsponge { position: absolute; left: 0; top: 0; width: 56px; height: 56px; font-size: 44px; line-height: 56px; text-align: center; will-change: transform; pointer-events: none; transition: width .2s; }
+.rsponge.wide { width: 110px; letter-spacing: 6px; }
+.rword { position: absolute; left: 0; top: 0; max-width: 46%; padding: 6px 10px; border-radius: 12px; background: #000b; border: 1px solid #ffffff44; font-weight: 700; font-size: 15px; line-height: 1.15; text-align: center; white-space: normal; will-change: transform; pointer-events: none; }
+.rword.pickup { font-size: 30px; background: #ffb34733; border-color: #ffb347; }
+.rword.mirror { border-style: dashed; }
+.rhead { text-align: center; } .rrule { font-size: 20px; font-weight: 800; }
+.game.storm-bg { background: linear-gradient(180deg, #6b4a2b, #2a1a0f); }
