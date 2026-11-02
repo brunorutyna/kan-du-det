@@ -15,13 +15,18 @@
   }
   K.game('komplimenter', {
     title: 'Komplimenter',
-    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.traps || [], r.drunk ? [r.drunk] : [], r.ask ? [r.ask] : [])),
+    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.start ? [r.start.join(' ')] : [], r.traps || [], r.drunk ? [r.drunk] : [], r.ask ? [r.ask] : [])),
     lint(p) {
       const e = [];
       p.rounds.forEach((r, i) => {
         if (!r.answers || !r.answers.length) e.push(`round ${i}: no answers`);
         (r.traps || []).forEach((t) => { if (r.answers.some((a) => words(a).map(tileOf).includes(tileOf(t)))) e.push(`round ${i}: trap "${t}" is also an answer word`); });
         if (tilesFor(r).length > 13) e.push(`round ${i}: too many tiles`);
+        if (r.start) {
+          const bag = (ws) => ws.map(tileOf).sort().join(' ');
+          if (!r.answers.some((a) => bag(words(a)) === bag(r.start))) e.push(`round ${i}: the pre-built wrong line must use exactly the tiles of a right answer`);
+          if (r.answers.some((a) => norm(words(a)) === norm(r.start))) e.push(`round ${i}: the pre-built line is already a right answer`);
+        }
         if (r.drunk && r.answers.some((a) => words(a).map(tileOf).includes(tileOf(r.drunk)))) e.push(`round ${i}: drunk tile is an answer word`);
       });
       return e;
@@ -57,7 +62,8 @@
         K.shuffle(tilesFor(r)).forEach((t, k) => {
           const b = s.btn(pool, K.da(t), () => { const w = new String(t); w.__k = k; picked.push(w); b.hidden = true; draw(); }, { cls: 'tile', data: { k: String(k), w: t } });
         });
-        const doneB = s.btn(bar, p.sayBtn || 'Sig det', async () => {
+        let doneB = null;
+        doneB = s.btn(bar, p.sayBtn || 'Sig det', async () => {
           const ok = r.answers.some((x) => norm(words(x)) === norm(picked.map(String)));
           K.tally(p.id, ok);
           pool.querySelectorAll('button').forEach((b) => { b.disabled = true; });
@@ -66,10 +72,17 @@
           await K.after(s, body, ok);
           i++; round();
         }, { answer: true, cls: 'main', data: { done: '1' } });
+        // Del 5: the trip writes first. The line arrives already built, in wrong Danish; tap tiles out and rebuild it.
+        (r.start || []).forEach((w) => { const b = [...pool.querySelectorAll('.tile')].find((x) => !x.hidden && x.dataset.w === tileOf(w)); if (b) { const t = new String(b.dataset.w); t.__k = +b.dataset.k; picked.push(t); b.hidden = true; } });
         draw();
         s.bot = (mode) => {
           if (s.locked) return null;
           const target = words(r.answers[0]).map(tileOf);
+          if (r.start && !(mode === 'wrong' && r.__w)) {
+            // undo from the end until what is built is a prefix of the target
+            const pre = picked.every((t, k) => String(t) === target[k]);
+            if (!pre) { const bs = built.querySelectorAll('button'); return bs[bs.length - 1]; }
+          }
           const free = [...pool.querySelectorAll('.tile')].filter((b) => !b.hidden);
           if (mode === 'wrong' && r.__w == null) r.__w = Math.random() < 0.5;
           if (mode === 'wrong' && r.__w) return picked.length >= 2 || !free.length ? doneB : free[0];

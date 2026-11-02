@@ -201,3 +201,23 @@ button .w { border-bottom: 0; }
 .rword.mirror { border-style: dashed; }
 .rhead { text-align: center; } .rrule { font-size: 20px; font-weight: 800; }
 .game.storm-bg { background: linear-gradient(180deg, #6b4a2b, #2a1a0f); }
+/* Del 5: talk (her face is the bond) */
+.talk-g .face { text-align: center; margin: 4px 0 8px; transition: transform .6s, filter .6s; transform: scale(calc(1 + var(--b, 0) * .12)) translateY(calc(var(--b, 0) * 3px)); filter: saturate(calc(1 + var(--b, 0) * .35)) brightness(calc(1 - var(--b, 0) * -.04)); }
+.talk-g .face .fe { font-size: 64px; line-height: 1.1; }
+.talk-g .face[data-b^="-"] { opacity: calc(1 + var(--b, 0) * .12); }
+.talk-g .face .name { font-size: 13px; opacity: .8; }
+.talk-g .tlog { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.talk-g .stage-l { font-style: italic; opacity: .85; }
+.opt.gone { opacity: .4; text-decoration: line-through; }
+.opt .need { display: block; font-size: 12px; text-decoration: none; opacity: .9; }
+/* Del 5: mirage (tap the word that lies) */
+.mirage-g .mtext { display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; font-size: 19px; margin: 10px 0; padding: 10px; border-radius: 12px; background: #0005; filter: blur(calc(var(--haze, 0) * .12px)); }
+.mirage-g .mw { min-width: 44px; min-height: 44px; padding: 4px 8px; font-size: 18px; background: #ffffff10; border: 1px solid #ffffff22; animation: shimmer 3s ease-in-out infinite; }
+.mirage-g .mw:nth-child(3n) { animation-delay: -1s; } .mirage-g .mw:nth-child(3n+1) { animation-delay: -2s; }
+.mirage-g .mw.shim { background: #ff6a3c33; }
+.mirage-g .mw.caught { background: #ffb34755; border-color: #ffb347; animation: none; }
+.mirage-g .mw.fixed { background: #5fae5a44; border-color: #5fae5a; animation: none; }
+.mirage-g .mp { font-size: 19px; margin-left: -4px; }
+.mirage-g .settled { font-size: 19px; line-height: 1.5; }
+.mirage-g .haze { min-height: 20px; }
+@keyframes shimmer { 0%, 100% { transform: translateY(0) skewX(0); opacity: 1; } 50% { transform: translateY(-1px) skewX(-2deg); opacity: .82; } }

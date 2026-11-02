@@ -6,7 +6,10 @@
 // params: { id, title, sub, mode: 'stage'|'map', cols, tiles: [{ id, e, label, level, lock, twin }],
 //           rounds (stage): [{ desc, en, target, hint, follow: { q, right, wrong, why } }],
 //           requests (map): [{ id, who, e, item, clue, en, room, needs, steps: [{ q, right, wrong, why }] }],
-//           twinFlag: flag name that turns on mirror twins (stage) }
+//           twinFlag: flag name that turns on mirror twins (stage),
+//           Del 5 (map): order: true → one request at a time, in the listed order; layouts: [[tile ids in grid order], …]
+//           → after each found item the house rearranges itself into the next layout (spectacle only: each room keeps
+//           its level); lostFlag: true → a wrong pick on an item sets flags['lost_' + request id] }
 (function (K) {
   'use strict';
   const el = K.el;
@@ -46,6 +49,9 @@
           if (!ids.has(r.room)) e.push(`request ${r.id}: unknown room ${r.room}`);
           (r.steps || []).forEach((x, k) => { if (!x.wrong || x.wrong.length < 2 || x.wrong.includes(x.right)) e.push(`request ${r.id} step ${k}: right + 2 different wrong`); });
         });
+        const ids2 = [...ids].sort().join();
+        (p.layouts || []).forEach((l, k) => { if (l.slice().sort().join() !== ids2) e.push(`layout ${k}: must list every tile exactly once`); });
+        if (p.layouts && p.layouts.length < p.requests.length) e.push('fewer layouts than requests');
         const stuck = K.boardReach(p);
         if (stuck.length) e.push(`requests never reachable: ${stuck.join(', ')}`);
       }
@@ -66,10 +72,12 @@
       let onTile = () => {};
       const tileEls = {};
       const tiles = (p.tiles || []).slice();
+      let layout = 0;
       function drawTiles(got) {
         board.innerHTML = '';
         const list = [];
-        tiles.forEach((t) => {
+        const order = p.layouts ? p.layouts[layout % p.layouts.length].map((id) => tiles.find((t) => t.id === id)) : tiles;
+        order.forEach((t) => {
           list.push(t);
           if (twins && p.mode === 'stage') list.push(Object.assign({}, t, { id: t.id + '~', twinOf: t.id }));
         });
@@ -129,10 +137,11 @@
       async function map() {
         const got = new Set(), done = new Set();
         const bag = el('div', 'bag'); body.insertBefore(bag, opts);
+        if (p.layouts) bag.textContent = p.bagEmpty || '';
         const sand = el('div', 'sand small'); body.insertBefore(sand, opts); let sandN = 0;
         let here = (tiles.find((t) => t.start) || tiles[0]).id;
         drawTiles(got);
-        const open = () => p.requests.filter((r) => !done.has(r.id) && (!r.needs || got.has(r.needs)));
+        const open = () => { const o = p.requests.filter((r) => !done.has(r.id) && (!r.needs || got.has(r.needs))); return p.order ? o.slice(0, 1) : o; };
         while (done.size < p.requests.length) {
           opts.innerHTML = '';
           Object.values(tileEls).forEach((x) => x.classList.toggle('here', x.dataset.tile === here));
@@ -155,8 +164,9 @@
               return o.length ? tileEls[o[0].room] : null;
             };
           });
-          for (const x of req.steps) await pick(x.q, x.right, x.wrong, x.why);
+          for (const x of req.steps) { const ok = await pick(x.q, x.right, x.wrong, x.why); if (!ok && p.lostFlag && st.flags) st.flags['lost_' + req.id] = true; }
           done.add(req.id); got.add(req.id);
+          if (p.layouts && done.size < p.requests.length) { layout++; sand.textContent = p.moved || 'Huset flytter sig.'; }
           bag.innerHTML = '🎒 ' + p.requests.filter((r) => done.has(r.id)).map((r) => r.e || '•').join(' ');
           K.ART.pop(bag);
           drawTiles(got);

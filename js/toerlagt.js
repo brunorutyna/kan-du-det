@@ -107,8 +107,9 @@
     K.goStep();
   };
   K.start4 = () => K.startPart(4);
+  K.start5 = () => K.startPart(5);
   K.CONFIG.openEnding = (st) => st.part >= 2;
-  K.CONFIG.again = (st) => (st.part === 4 ? K.start4() : st.part === 3 ? K.start3() : st.part === 2 ? K.start2() : K.start(true));
+  K.CONFIG.again = (st) => (st.part >= 4 ? K.startPart(st.part) : st.part === 3 ? K.start3() : st.part === 2 ? K.start2() : K.start(true));
   // the chapter a step belongs to (the last chapter card at or before it)
   K.chapterOf = (step) => { let ch = 1; for (let i = 0; i <= step && i < K.FLOW.length; i++) if (K.FLOW[i].ch) ch = K.FLOW[i].ch; return ch; };
   // starting something new while a story is in progress asks first (it used to wipe the place silently)
@@ -149,9 +150,14 @@
       const b = s.btn(menu, 'Del 3: Kaffehavet ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start3(); }), { cls: (mid || has4 ? 'ghost ' : 'main ') + 'part3', data: { bot: 'part3' } });
       if (/[?&]part3/.test(location.search)) s.bot = () => b;
     }
+    const has5 = (S.part4done || 0) >= 1 || (S.reached || 0) >= 25;
     if (has4 && !(run && run.part === 4)) {
-      const b = s.btn(menu, 'Del 4: Riffet ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start4(); }), { cls: (mid ? '' : 'main ') + 'part4', data: { bot: 'part4' } });
+      const b = s.btn(menu, 'Del 4: Riffet ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start4(); }), { cls: (mid || has5 ? 'ghost ' : 'main ') + 'part4', data: { bot: 'part4' } });
       if (/[?&]part4/.test(location.search)) s.bot = () => b;
+    }
+    if (has5 && !(run && run.part === 5)) {
+      const b = s.btn(menu, 'Del 5: Fætter ▸', () => K.confirmNew(() => { K.MUSIC.unlock(); K.start5(); }), { cls: (mid ? '' : 'main ') + 'part5', data: { bot: 'part5' } });
+      if (/[?&]part5/.test(location.search)) s.bot = () => b;
     }
     const n = S.reached || 0;
     if (n < 1) return;
@@ -162,12 +168,14 @@
       const p2 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part2); });
       const p3 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part3); });
       const p4 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part4); });
+      const p5 = K.CHAPTERS.findIndex((c, i) => { const f = K.FLOW[K.chapterStart(i + 1)]; return !!(f && f.part5); });
       K.CHAPTERS.forEach((c, i) => {
         const ch = i + 1;
         if (i === 0) box.appendChild(el('div', 'chap-part', 'Del 1'));
         if (i === p2) box.appendChild(el('div', 'chap-part', 'Del 2'));
         if (i === p3) box.appendChild(el('div', 'chap-part', 'Del 3'));
         if (i === p4) box.appendChild(el('div', 'chap-part', 'Del 4'));
+        if (i === p5) box.appendChild(el('div', 'chap-part', 'Del 5'));
         const locked = ch > n;
         const b = el('button', 'btn chap' + (locked ? ' locked' : '') + (ch === here ? ' here' : ''),
           `<span class="n">${ch}</span><span class="t"><b>${K.esc(c.title)}</b><span>${locked ? 'Låst' : K.esc(c.topic)}${ch === here ? ' · du er her' : ''}</span></span>`);
